@@ -6,12 +6,12 @@
     "bgSound": "",
     "myHeadImg": "http://api.zmiti.com/zmiti_ele/company/yangjw/material/20170512/e86045dbe0675cfac24979c60dcabd1f.png",
     "groupName": "",
-    "title": "新华社2017校园招聘",
-    "indexBg":"./assets/images/bg.jpg",
+    "title": "党务纪检应知应会小测验",
+    "indexBg":"./assets/images/bg.png",
+    "theme":"DANGJIAN",
     "wxappid": "wxfacf4a639d9e3bcc",
     "wxappsecret": "149cdef95c99ff7cab523d8beca86080",
-    "worksid": "1010753661",
+    "worksid": "123456789",
     "loadingImg": [
-        "http://api.zmiti.com/zmiti_ele/company/yangjw/material/20170512/e86045dbe0675cfac24979c60dcabd1f.png"
     ]
 }

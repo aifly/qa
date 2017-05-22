@@ -7,6 +7,11 @@ import IScroll from 'iscroll';
 import './assets/css/index.css';
 
 import ZmitiLoadingApp from './loading/index.jsx';
+import ZmitiIndexApp from './index/index.jsx';
+
+import Obserable from './components/public/obserable';
+var obserable = new Obserable();
+
 export class App extends Component {
 	constructor(props) {
 		super(props);
@@ -30,20 +35,14 @@ export class App extends Component {
 			mainStyle.background = 'url('+this.state.indexBg+') no-repeat center / cover'
 		}
 
+		var data ={
+			obserable,
+			theme:this.state.theme
+		}
+
 		return (
 			<div className='zmiti-main-ui' style={mainStyle}>
-				<section className='zmiti-main-title'>{this.state.title}</section>
-				<div className={'zmiti-main-btn ' + (this.state.tap?'active':'')} onTouchTap={this.beginTest.bind(this)}>开始考试</div>
-				<div className={'zmiti-main-form '+(this.state.showForm?'active':'')}>
-					<div className='zmiti-form-title'>{window.formTitle||'请输入你的姓名和电话'}</div>
-					<div className='zmiti-form-input'>
-						<label>姓名 ：</label><input value={this.state.name} onChange={e=>{this.setState({name:e.target.value})}} type='text'/>
-					</div>
-					<div className='zmiti-form-input'>
-						<label>电话 ：</label><input  onChange={e=>{this.setState({tel:e.target.value})}} type='text'/>
-					</div>
-					<div onTouchTap={this.submit.bind(this)} className={'zmiti-main-submit '+(this.state.submit?'active':'')}>提交</div>
-				</div>
+				<ZmitiIndexApp {...data}></ZmitiIndexApp>
 			</div>
 		);
 	}
@@ -298,6 +297,7 @@ export class App extends Component {
 
 			this.state.indexBg = data.indexBg;
 			this.state.title = data.title;
+			this.state.theme = data.theme;
 			this.forceUpdate();
 			
 			$.ajax({
