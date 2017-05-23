@@ -17,7 +17,7 @@
 		&:last-of-type{
 			height: 44%;
 			top:6%;
-			@include transformOrigin(bottom);
+			@include transformOrigin(center bottom);
 			@include transform(rotate(130deg));
 			&.active{
 				@include transform(rotate(0));

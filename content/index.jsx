@@ -101,12 +101,12 @@ class ZmitiContentApp extends Component {
 							<div>恭喜您！</div>
 							<div>在本次测试中获得<span>{this.state.score}</span>分</div>
 						</div>
-						<div className='zmiti-dangjian-result-btn'>
+						<div onTouchTap={this.watchAnswer.bind(this)} className='zmiti-dangjian-result-btn'>
 							<span><img src='./assets/images/watch.png'/></span>
 							<span>查看答案</span>
 						</div>
 
-						<div className='zmiti-dangjian-result-btn'>
+						<div onTouchTap={this.doAgin.bind(this)} className='zmiti-dangjian-result-btn'>
 							<span><img src='./assets/images/refresh.png'/></span>
 							<span>再做一次</span>
 						</div>
@@ -122,10 +122,37 @@ class ZmitiContentApp extends Component {
 		}
 
 		return (
-			<div className={'zmiti-content-main-ui '+(this.state.showContent ? 'show':'')}>
+			<div className={'zmiti-content-main-ui '+(this.state.showContent ? 'show':'') +(this.state.hideContent?' hide':'')}>
 				{component}
 			</div>
 		);
+	}
+
+	watchAnswer(){
+
+		let {obserable} = this.props;
+		obserable.trigger({
+			type:'toggleResult',
+			data:true
+		});
+
+		this.setState({
+			hideContent:true
+		})
+
+	}
+
+	doAgin(){
+		this.setState({
+			hideList:false,
+			currentQid:0,
+		},()=>{
+			this.scroll.refresh();
+		});
+		let {obserable} =  this.props;
+		obserable.trigger({
+			type:'clearMyAnswer'
+		})
 	}
 
 

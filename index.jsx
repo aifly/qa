@@ -321,6 +321,10 @@ export class App extends Component {
 				this.state.myAnswer.push(data);
 				this.forceUpdate();
 			});
+			obserable.on('clearMyAnswer',(data)=>{
+				this.state.myAnswer.length = 0;
+				this.forceUpdate();
+			});
 			
 			$.ajax({
 				url:'http://api.zmiti.com/v2/weixin/getwxuserinfo/',

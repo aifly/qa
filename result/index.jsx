@@ -65,12 +65,7 @@ class ZmitiResultApp extends Component {
 
 
 	componentDidMount() {
-		setTimeout(()=>{
-			let {IScroll} = this.props;
-			this.scroll = new IScroll(this.refs['zmiti-dangjian-reuslt-C'],{
-				scrollbars:true
-			})
-		},1000);
+		
 
 		let {obserable} = this.props;
 
@@ -86,6 +81,11 @@ class ZmitiResultApp extends Component {
 		});
 
 		obserable.on('toggleResult',(data)=>{
+			if(data){
+				obserable.trigger({
+					type:'setResultScroll'
+				});
+			}
 			this.setState({
 				showResult:data
 			})

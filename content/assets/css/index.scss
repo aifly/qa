@@ -15,6 +15,9 @@ $viewW:640px;
   &.show{
     @include transform(translate3d(0,0,0));
   }
+  &.hide{
+    @include transform(translate3d(-$viewW,0,0));
+  }
   .zmiti-dangjian-content-user{
 
 
