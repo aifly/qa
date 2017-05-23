@@ -3,6 +3,12 @@ $viewW:640px;
 .zmiti-index-main-ui{
   
 
+  @include transition(.6s);
+  &.hide{
+    @include transform(translate3d(-$viewW,0,0) scale(.85));
+
+  }
+
   //theme of paper 
   .zmiti-index-paper-theme{
      @include pos(a);
@@ -141,16 +147,58 @@ $viewW:640px;
            left: 0;
            top: 0;
            @include br(10px);
-           box-shadow:0 0 30px rgba(0,0,0,.4);
+           box-shadow:0 0 30px rgba(0,0,0,.2);
          }   
+       }
+       .zmiti-index-logo{
+          @include pos(a);
+          width: 70px;
+          border:2px solid #Fff;
+          @include br(50%);
+          padding: 14px;
+          top: 200px;
+          left: 50%;
+          background: #f66;
+          margin-left: -50px;
+          z-index: 1;
+          img{vertical-align:bottom;@include pos(r);top:-2px;}
+       }
+       .zmiti-index-title{
+        width: 360px;
+        @include pos(a);
+        height: 34vh;
+        background: #fff;
+        bottom: 4vh;
+        z-index: 0;
+        left: 50%;
+        margin-left: -180px;
+        color:#f66;
+        text-align: center;
+        font-size: 70px;
+        padding: 10px;
+        box-sizing:border-box;
+        &:after{
+          content:"";
+          @include pos(a);
+          width: 0;
+          height: 0;
+          border-bottom: 40px solid #f66;
+          border-left: 40px solid transparent;
+          bottom: 2vh;
+          right: 2vh;
+
+        }
        }
        .zmiti-begin-btn{
          margin-top: 5vh;
-
          @include br(10px);
          font-size: 42px;
+         @include transition(.1s);
+         &.active{
+           @include transform(translate3d(0,4px,0) scale(.99));
+         }
        }
-       .zmiti-btn{
+       @at-root.zmiti-btn{
          width: 500px;
          height: 10vh;
          line-height: 10vh;

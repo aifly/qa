@@ -9,9 +9,67 @@
     "title": "党务纪检应知应会小测验",
     "indexBg":"./assets/images/bg.png",
     "theme":"DANGJIAN",
+    "duration":"360",
     "wxappid": "wxfacf4a639d9e3bcc",
     "wxappsecret": "149cdef95c99ff7cab523d8beca86080",
     "worksid": "123456789",
+    "question":[
+        {
+            "img":"./assets/images/300.jpg",
+            "title":"1党章指出，我们党最大政治优势是密切联系群众，党执政后的最大危险是————?",
+            "answer":[
+                {
+                    "content":"脱离群众",
+                    "isRight":true
+                },
+                {
+                    "content":"权力腐败",
+                    "isRight":false
+                },
+                {
+                    "content":"以权谋私",
+                    "isRight":false
+                }
+
+            ]
+        },{
+            "img":"",
+            "title":"2党章指出，我们党最大政治优势是密切联系群众，党执政后的最大危险是————?",
+            "answer":[
+                {
+                    "content":"脱离群众",
+                    "isRight":false
+                },
+                {
+                    "content":"权力腐败",
+                    "isRight":true
+                },
+                {
+                    "content":"以权谋私",
+                    "isRight":false
+                }
+
+            ]
+        },{
+            "img":"",
+            "title":"3党章指出，我们党最大政治优势是密切联系群众，党执政后的最大危险是————?",
+            "answer":[
+                {
+                    "content":"脱离群众",
+                    "isRight":true
+                },
+                {
+                    "content":"权力腐败",
+                    "isRight":false
+                },
+                {
+                    "content":"以权谋私",
+                    "isRight":false
+                }
+
+            ]
+        }
+    ],
     "loadingImg": [
     ]
 }

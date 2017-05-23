@@ -8,6 +8,8 @@ import './assets/css/index.css';
 
 import ZmitiLoadingApp from './loading/index.jsx';
 import ZmitiIndexApp from './index/index.jsx';
+import ZmitiContentApp from './content/index.jsx';
+import ZmitiResultApp from './result/index.jsx';
 
 import Obserable from './components/public/obserable';
 var obserable = new Obserable();
@@ -22,7 +24,8 @@ export class App extends Component {
 			loadingImg:[],
 			showLoading:false,
 			name:'',
-			tel:''
+			tel:'',
+			myAnswer:[]
 			
 		}
 		this.viewW = document.documentElement.clientWidth;
@@ -37,12 +40,19 @@ export class App extends Component {
 
 		var data ={
 			obserable,
-			theme:this.state.theme
+			IScroll,
+			theme:this.state.theme,
+			title:this.state.title,
+			duration:this.state.duration,
+			question:this.state.question,
+			myAnswer:this.state.myAnswer,
 		}
 
 		return (
 			<div className='zmiti-main-ui' style={mainStyle}>
 				<ZmitiIndexApp {...data}></ZmitiIndexApp>
+				<ZmitiContentApp {...data}></ZmitiContentApp>
+				<ZmitiResultApp {...data}></ZmitiResultApp>
 			</div>
 		);
 	}
@@ -298,7 +308,19 @@ export class App extends Component {
 			this.state.indexBg = data.indexBg;
 			this.state.title = data.title;
 			this.state.theme = data.theme;
-			this.forceUpdate();
+			this.state.duration = data.duration;
+			this.state.question = data.question;
+			this.forceUpdate(()=>{
+				obserable.trigger({
+					type:'setQuestionScroll'
+				});
+				
+			});
+
+			obserable.on('fillAnswer',(data)=>{
+				this.state.myAnswer.push(data);
+				this.forceUpdate();
+			});
 			
 			$.ajax({
 				url:'http://api.zmiti.com/v2/weixin/getwxuserinfo/',

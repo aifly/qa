@@ -7,7 +7,7 @@ class ZmitiIndexApp extends Component {
 	constructor(props) {
 		super(props);
 		this.state={
-			
+			beginTest:false
 		};
 		this.viewW = document.documentElement.clientWidth;
 		this.viewH = document.documentElement.clientHeight;
@@ -16,7 +16,6 @@ class ZmitiIndexApp extends Component {
 	render() {
 
 		var conponent = null;
-			console.log(this.props.theme)
 			switch(this.props.theme){
 				case "PAPER":
 				conponent = <div>
@@ -43,16 +42,24 @@ class ZmitiIndexApp extends Component {
 							<div className='zmiti-dangjian-cover'>
 								<svg width="100%" height="300px" version="1.1"
 									xmlns="http://www.w3.org/2000/svg">
-									<path stroke='#fff' fill='none' d="M0 120 L250 200 L500 120 " strokeWidth={3} />
+									<path stroke='#fff' fill='none' d="M0 100 L250 180 L500 100 " strokeWidth={3} />
 									<g>
-										<path strokeDasharray="10,4" d="M230 130 L230 240" stroke='#fff' />
-										<path strokeDasharray="10,4" d="M270 130 L270 240" stroke='#fff' />
-										<circle cx='250' cy='120' r = '50' stroke='#fff' strokeWidth='2' fill='#f66'></circle>
-										<circle cx='250' cy='120' r = '20' stroke='#fff' strokeWidth='2' fill='#f66'></circle>
+										<path strokeDasharray="10,6" d="M235 130 L235 210" stroke='#fff' strokeWidth={3} >
+											 {this.state.beginTest&& <animateTransform attributeName="transform" begin="0s" dur=".5s" type="scale" from="1 1" to="1 .5" repeatCount="1" fill='freeze'/>}
+										</path>
+										<path strokeDasharray="10,6" d="M265 130 L265 210" stroke='#fff' strokeWidth={3} >
+											{this.state.beginTest&& <animateTransform attributeName="transform" begin="0s" dur=".5s" type="scale" from="1 1" to="1 1.6" repeatCount="1" fill='freeze'/>}
+										</path>
+										<circle cx='250' cy='100' r = '50' stroke='#fff' strokeWidth='2' fill='#f66'></circle>
+										<circle cx='250' cy='100' r = '20' stroke='#fff' strokeWidth='2' fill='#f66'></circle>
 									</g>
 									</svg>
+								<div className='zmiti-index-logo'>
+									<img src='./assets/images/logo.png'/>
+								</div>
+								<div className='zmiti-index-title'>{this.props.title}</div>
 							</div>
-							<div className='zmiti-btn zmiti-begin-btn'>
+							<div onTouchTap={this.beginTest.bind(this)} className={'zmiti-btn zmiti-begin-btn ' + (this.state.btnClick?'active':'')}>
 								参加测试
 							</div>
 						</section>
@@ -62,10 +69,29 @@ class ZmitiIndexApp extends Component {
 
 
 		return (
-			<div className='zmiti-index-main-ui'>
+			<div className={'zmiti-index-main-ui '+(this.state.hideIndex?'hide':'')}>
 				{conponent}
 			</div>
 		);
+	}
+
+	beginTest(){
+
+		let {obserable} = this.props;
+		this.setState({
+			btnClick:true
+		})
+		setTimeout(()=>{
+			this.setState({
+				beginTest:true,
+				btnClick:false,
+				hideIndex:true
+			})
+			obserable.trigger({
+				type:'toggleContent',
+				data:true
+			})
+		},200)
 	}
 
 
