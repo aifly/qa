@@ -7,16 +7,31 @@ $viewW:640px;
 
   @include transform(translate3d($viewW,0,0));
   @include transition(.4s);
-
+ $height:70px;
   &.show{
     @include transform(translate3d(0,0,0));
     z-index: 115001;
   }
 
+  .zmiti-dangjian-back-btn{
+       width: 100%;
+       height: $height;
+       background: #f66;
+       text-align: center;
+       line-height: $height;
+       color:#fff;
+       font-size: 34px;
+       @include br(10px);
+       @include transition(.1s);
+        &.active{
+            @include transform(translate3d(0,3px,0) scale(.99));
+         }
+    }
+
 
   .zmiti-dangjian-result{
       z-index: 100;
-      $height:70px;
+     
 
 
       .zmiti-dangjian-reuslt-C{
@@ -92,6 +107,8 @@ $viewW:640px;
         }
       }
     }  
+
+
   
 }
 

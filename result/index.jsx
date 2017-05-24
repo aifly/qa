@@ -25,7 +25,7 @@ class ZmitiResultApp extends Component {
 				}
 				var arr = ["A",'B','C',"D"];
 			component = <div ref='zmiti-dangjian-reuslt-C' className='zmiti-dangjian-result lt-full' style={mainStyle}>
-				<section className='zmiti-dangjian-reuslt-C' style={{paddingBottom:30}}>
+				<section className='zmiti-dangjian-reuslt-C' style={{paddingBottom:50}}>
 					<header className='zmiti-dangjian-header'>
 						标准答案
 					</header>
@@ -49,6 +49,7 @@ class ZmitiResultApp extends Component {
 								})}
 							</div>
 						})}
+						<div onTouchTap={this.backToShare.bind(this)} className={'zmiti-dangjian-back-btn '+(this.state.back?'active':'')}>返回</div>
 					</div>}
 					</div>
 				</section>
@@ -57,10 +58,30 @@ class ZmitiResultApp extends Component {
 		}
 
 		return (
-			<div className={'zmiti-result-main-ui lt-full '+(this.state.showResult?'show':'')}>
+			<div className={'zmiti-result-main-ui lt-full  '+(this.state.showResult?'show':'')}>
 				{component}
 			</div>
 		);
+	}
+
+
+	backToShare(){
+		let {obserable} = this.props;
+
+		this.setState({
+			back:true
+		});
+
+		setTimeout(()=>{
+			this.setState({
+				back:false
+			});
+
+			obserable.trigger({
+				type:'backToShare'
+			})
+		},200)
+		
 	}
 
 
@@ -80,6 +101,7 @@ class ZmitiResultApp extends Component {
 			},1000)
 		});
 
+	 
 		obserable.on('toggleResult',(data)=>{
 			if(data){
 				obserable.trigger({

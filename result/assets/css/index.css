@@ -20,6 +20,20 @@
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
     z-index: 115001; }
+  .zmiti-result-main-ui .zmiti-dangjian-back-btn {
+    width: 100%;
+    height: 70px;
+    background: #f66;
+    text-align: center;
+    line-height: 70px;
+    color: #fff;
+    font-size: 34px;
+    border-radius: 10px;
+    -webkit-transition: 0.1s;
+    transition: 0.1s; }
+    .zmiti-result-main-ui .zmiti-dangjian-back-btn.active {
+      -webkit-transform: translate3d(0, 3px, 0) scale(0.99);
+      transform: translate3d(0, 3px, 0) scale(0.99); }
   .zmiti-result-main-ui .zmiti-dangjian-result {
     z-index: 100; }
     .zmiti-result-main-ui .zmiti-dangjian-result .zmiti-dangjian-reuslt-C {

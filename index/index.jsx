@@ -85,12 +85,17 @@ class ZmitiIndexApp extends Component {
 			this.setState({
 				beginTest:true,
 				btnClick:false,
-				hideIndex:true
-			})
-			obserable.trigger({
-				type:'toggleContent',
-				data:true
-			})
+			});
+
+			setTimeout(()=>{
+				this.setState({
+					hideIndex:true
+				})
+				obserable.trigger({
+					type:'toggleContent',
+					data:true
+				})
+			},500)
 		},200)
 	}
 

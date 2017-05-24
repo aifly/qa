@@ -22,9 +22,10 @@ export class App extends Component {
 		this.state = {
 			progress:'0%',
 			loadingImg:[],
-			showLoading:false,
+			showLoading:true,
 			name:'',
 			tel:'',
+			score:0,
 			myAnswer:[]
 			
 		}
@@ -50,9 +51,10 @@ export class App extends Component {
 
 		return (
 			<div className='zmiti-main-ui' style={mainStyle}>
-				<ZmitiIndexApp {...data}></ZmitiIndexApp>
-				<ZmitiContentApp {...data}></ZmitiContentApp>
-				<ZmitiResultApp {...data}></ZmitiResultApp>
+				{this.state.showLoading && <ZmitiLoadingApp progress={this.state.progress}></ZmitiLoadingApp>}
+				{!this.state.showLoading && <ZmitiIndexApp {...data}></ZmitiIndexApp>}
+				{!this.state.showLoading && <ZmitiContentApp {...data}></ZmitiContentApp>}
+				{!this.state.showLoading && <ZmitiResultApp {...data}></ZmitiResultApp>}
 			</div>
 		);
 	}
@@ -301,9 +303,24 @@ export class App extends Component {
 	 
 
 	componentDidMount() {
+
+		 
 		
 		var s = this;
-		$.getJSON('./assets/js/data.json',(data)=>{
+		$.getJSON('./assets/js/data.js',(data)=>{
+
+
+			s.loading(data.loadingImg,(scale)=>{
+				s.setState({
+					progress:(scale*100|0)+'%'
+				})
+			},()=>{
+				s.setState({
+					showLoading:false
+				});
+
+			});
+
 
 			this.state.indexBg = data.indexBg;
 			this.state.title = data.title;
@@ -321,12 +338,32 @@ export class App extends Component {
 				this.state.myAnswer.push(data);
 				this.forceUpdate();
 			});
+
+		
+
+			obserable.on('countdown',()=>{
+				if(this.state.duration <=0){
+					clearInterval(this.timer);
+				}
+				this.timer = setInterval(()=>{
+					this.setState({
+						duration:this.state.duration - 1
+					});
+				},1000);
+			});
+
+			obserable.on('clearCountdown',()=>{
+				clearInterval(this.timer);
+			});
+
+
+
 			obserable.on('clearMyAnswer',(data)=>{
 				this.state.myAnswer.length = 0;
 				this.forceUpdate();
 			});
 			
-			$.ajax({
+			/*$.ajax({
 				url:'http://api.zmiti.com/v2/weixin/getwxuserinfo/',
 				data:{
 					code:s.getQueryString('code'),
@@ -453,7 +490,7 @@ export class App extends Component {
 
 			s.headimgurl = localStorage.getItem('headimgurl');
 		
-			s.forceUpdate();
+			s.forceUpdate();*/
 			
 
 			

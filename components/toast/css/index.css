@@ -8,7 +8,8 @@
   height: 100%;
   position: absolute;
   left: 0;
-  top: 0; }
+  top: 0;
+  overflow: hidden; }
 
 .zmiti-toast-main-ui {
   background: rgba(0, 0, 0, 0.4);
@@ -19,6 +20,7 @@
   transform: translate3d(-50%, 0, 0);
   padding: 20px 30px;
   color: #fff;
-  border-radius: 10px; }
+  border-radius: 10px;
+  z-index: 99999; }
 
 /*# sourceMappingURL=index.css.map */
