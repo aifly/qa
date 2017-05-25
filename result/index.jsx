@@ -23,7 +23,8 @@ class ZmitiResultApp extends Component {
 			var mainStyle = {
 					background:"#fff url(./assets/images/bg.png) no-repeat center top / cover "
 				}
-				var arr = ["A",'B','C',"D"];
+				var arr = this.props.arr;
+				
 			component = <div ref='zmiti-dangjian-reuslt-C' className='zmiti-dangjian-result lt-full' style={mainStyle}>
 				<section className='zmiti-dangjian-reuslt-C' style={{paddingBottom:50}}>
 					<header className='zmiti-dangjian-header'>
@@ -39,13 +40,11 @@ class ZmitiResultApp extends Component {
 								</article>
 								{item.answer.map((a,k)=>{
 									if(a.isRight){
-										if(k === this.props.myAnswer[i]){
-											return <div key={i+new Date().getTime()+2} className={'zmiti-dangjian-result-a-item right '+(a.isRight?'active':'') }><span>{arr[k]+'、'+a.content}</span></div>		
-										}else{
-											return <div key={i+new Date().getTime()+100} className={'zmiti-dangjian-result-a-item error ' }><span>{arr[k]+'、'+a.content}</span></div>		
-										}
-									}									
-									return <div key={k} className={'zmiti-dangjian-result-a-item '+(this.props.myAnswer[i] === k ?'active':'') }><span>{arr[k]+'、'+a.content}</span></div>
+										return <div key={k} className={'zmiti-dangjian-result-a-item right '+(this.props.myAnswer[i][item.isMultiselect?k:0] === k ?'active':'') }><span>{arr[k]+'、'+a.content}</span></div>	
+									}else{
+										return <div key={k} className={'zmiti-dangjian-result-a-item '+(this.props.myAnswer[i][item.isMultiselect?k:0] === k ?'active':'') }><span>{arr[k]+'、'+a.content}</span></div>
+									}
+									
 								})}
 							</div>
 						})}

@@ -25,6 +25,7 @@ export class App extends Component {
 			showLoading:true,
 			name:'',
 			tel:'',
+			arr : ["A",'B','C',"D","E","F","G","H","I","J"],
 			score:0,
 			myAnswer:[]
 			
@@ -47,6 +48,7 @@ export class App extends Component {
 			duration:this.state.duration,
 			question:this.state.question,
 			myAnswer:this.state.myAnswer,
+			arr:this.state.arr
 		}
 
 		return (
@@ -213,7 +215,7 @@ export class App extends Component {
 
 			$.ajax({
 				type:'get',
-				url: "http://api.zmiti.com/weixin/jssdk.php?type=signature&durl="+code_durl+"&worksid="+worksid,
+				url: "http://api.zmiti.com/weixin/jssdk.php?type=signature&durl="+code_durl,
 				dataType:'jsonp',
 				jsonp: "callback",
 			    jsonpCallback: "jsonFlickrFeed",
@@ -257,7 +259,7 @@ export class App extends Component {
 						        };
 
 						        if((s.nickname || s.headimgurl) && s.openid){
-						        	s.getPos(s.nickname,s.headimgurl);
+						        	//s.getPos(s.nickname,s.headimgurl);
 						        }
 						       
 						    }
@@ -307,9 +309,7 @@ export class App extends Component {
 		 
 		
 		var s = this;
-		$.getJSON('./assets/js/data.js',(data)=>{
-
-
+		$.getJSON('./assets/js/data.json',(data)=>{
 			s.loading(data.loadingImg,(scale)=>{
 				s.setState({
 					progress:(scale*100|0)+'%'
@@ -327,6 +327,7 @@ export class App extends Component {
 			this.state.theme = data.theme;
 			this.state.duration = data.duration;
 			this.state.question = data.question;
+			this.wxConfig(data.shareTitle,data.shareDesc,data.shareImg);
 			this.forceUpdate(()=>{
 				obserable.trigger({
 					type:'setQuestionScroll'
@@ -339,7 +340,7 @@ export class App extends Component {
 				this.forceUpdate();
 			});
 
-		
+			window.s = this;
 
 			obserable.on('countdown',()=>{
 				if(this.state.duration <=0){

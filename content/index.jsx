@@ -12,10 +12,11 @@ class ZmitiContentApp extends Component {
 		super(props);
 		this.state={
 			toast:'',
-			username:'1',
-			tel:'15718879215',
+			username:'',
+			tel:'',
 			currentQid:0,
-			score:0
+			score:0,
+			currentAnswer:[]
 		};
 		this.viewW = document.documentElement.clientWidth;
 		this.viewH = document.documentElement.clientHeight;
@@ -116,8 +117,9 @@ class ZmitiContentApp extends Component {
 						}
 
 						return	<section className={'zmiti-dangjian-q-scroll '+ className} ref={'zmiti-dangjian-q-scroll'+q} key={q} style={scrollStyle}>
-									<section style={{paddingBottom:40}}>
+									<section style={{paddingBottom:60}}>
 										<div className='zmiti-dangjian-q-title'>
+											{question.isMultiselect && <span> * 此题为多选题 </span>}
 											<article>
 												{question.img && <img src={question.img}/>}	
 												<div>{question.title}</div>
@@ -131,11 +133,13 @@ class ZmitiContentApp extends Component {
 											{question.answer.map((item,i)=>{
 												return <div 
 														onTouchTap={this.chooseMyAnswer.bind(this,i)} key={i} 
-														className={'zmiti-dangjian-q-item '+(this.props.myAnswer[this.state.currentQid] === i ? 'active':'')}>
-														{item.content}
+														className={'zmiti-dangjian-q-item '+(this.state.currentAnswer[question.isMultiselect?i:0] === i ? 'active':'')}>
+														{this.props.arr[i]+"、"+item.content}
 													</div>
 											})}
-											{this.props.myAnswer.length>=this.props.question.length && <div onTouchTap={this.submitPaper.bind(this)} className={'zmiti-dangjian-submit-btn ' + (this.state.submit?'active':'')}>提交答卷</div>}
+
+											{this.props.myAnswer.length>=this.props.question.length-1 && <div onTouchTap={this.submitPaper.bind(this)} className={'zmiti-dangjian-submit-btn ' + (this.state.submit?'active':'')}>提交答卷</div>}
+											{this.props.myAnswer.length<this.props.question.length-1 && <div onTouchTap={this.doNext.bind(this)} className={'zmiti-dangjian-submit-btn ' + (this.state.submit?'active':'')}>下一题</div>}
 										</div>
 									</section>	
 								</section>
@@ -240,17 +244,47 @@ class ZmitiContentApp extends Component {
 			submit:true
 		});
 		var score = 0;
-		this.props.myAnswer.map((item,i)=>{
-			this.props.question[i].answer.map((a,k)=>{
-				if(a.isRight){
-					if(item === k){
-						score+=this.props.question[i].score||0;
-					}
-				}
-			})
+		let {obserable} = this.props;
+		obserable.trigger({
+			type:'fillAnswer',
+			data:this.state.currentAnswer.concat([])
 		});
 
-		let {obserable} = this.props;
+		this.props.myAnswer.map((item,i)=>{
+			this.props.question[i].rightAnswer = [];
+
+			this.props.question[i].answer.map((a,k)=>{
+				if(a.isRight){
+					this.props.question[i].rightAnswer.push(k);
+				}else{
+					this.props.question[i].rightAnswer.push(undefined);
+				}
+			})
+
+		});
+
+
+
+
+		this.props.question.map((item,i)=>{
+			if(item.isMultiselect){
+				var isRight = true;
+				this.props.question[i].rightAnswer.map((right,k)=>{
+					isRight = this.props.myAnswer[i][k] === right;
+				})
+				if(isRight){
+					score += this.props.question[i].score;
+				}
+
+			}else{
+				this.props.question[i].rightAnswer.map((right,k)=>{
+					if(right === this.props.myAnswer[i][0]){
+						score += this.props.question[i].score;
+					}
+				})
+			}
+		})
+		
 		obserable.trigger({
 			type:'clearCountdown'
 		})
@@ -264,14 +298,11 @@ class ZmitiContentApp extends Component {
 			});			
 		},200);
 
-
 		var s = this;
 
-
 		var idx = Math.random()*this.zmitiMap.length|0;
-		return;
 		$.ajax({
-	   		url:'http://api.zmiti.com/v2/weixin/add_wxuser/',
+	   		url:'http://api.zmiti.com/v2/weixin/postqascore/',
 	   		type:'get',
 	   		data:{
 	   			wxopenid:'zmiti-qa-'+new Date().getTime(),
@@ -301,29 +332,60 @@ class ZmitiContentApp extends Component {
 	   	});
 
 
+	}
 
+
+	doNext(){//下一题目；
+
+		let {obserable} = this.props;
+		obserable.trigger({
+			type:'fillAnswer',
+			data:this.state.currentAnswer.concat([])
+		});
+		this.setState({
+			currentQid:this.state.currentQid+1,
+			currentAnswer:[]
+		},()=>{
+
+			//this.scroll.refresh();
+		})
 	}
 
 
 	chooseMyAnswer(i){
+
+
+	 
 		if(!this.props.myAnswer[this.state.currentQid] && this.props.myAnswer[this.state.currentQid] !== 0){
-			let {obserable} = this.props;
-			obserable.trigger({
-				type:'fillAnswer',
-				data:i
+			
+			this.props.question[this.state.currentQid].answer.map((itne,i)=>{
+				this.state.currentAnswer.push(undefined);
 			});
 
-			setTimeout(()=>{
-				if(this.props.myAnswer.length>=this.props.question.length){
-					//最后一题目了
-					return;
-				}
-				this.setState({
-					currentQid:this.state.currentQid+1
-				},()=>{
-					//this.scroll.refresh();
-				})
-			},400)
+			this.state.currentAnswer.length = this.props.question[this.state.currentQid].answer.length;
+
+			if(this.props.question[this.state.currentQid].isMultiselect){//多选题
+
+				
+				var has = false;
+				this.state.currentAnswer.forEach((item,k)=>{
+					if(item  === i){
+						has = true;
+						return;
+					}
+				});
+				if(has){
+					this.state.currentAnswer.splice(i,1,undefined);	
+				}else{
+					this.state.currentAnswer[i] = i;
+				}	
+			}else{//单选题目
+				this.state.currentAnswer[0] = i;
+			}
+			
+
+			this.forceUpdate();
+			
 		}
 	}
 

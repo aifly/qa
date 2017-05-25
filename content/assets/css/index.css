@@ -136,6 +136,7 @@
             .zmiti-content-main-ui .zmiti-dangjian-question-C header > aside:last-of-type > div span {
               color: #f66; }
     .zmiti-content-main-ui .zmiti-dangjian-question-C .zmiti-dangjian-q-scroll {
+      width: 640px;
       overflow: hidden;
       position: absolute;
       box-sizing: border-box; }
@@ -167,6 +168,11 @@
       line-height: 50px;
       box-sizing: border-box;
       position: relative; }
+      .zmiti-content-main-ui .zmiti-dangjian-question-C .zmiti-dangjian-q-title > span {
+        color: #f66;
+        font-size: 24px;
+        position: absolute;
+        top: -44px; }
       .zmiti-content-main-ui .zmiti-dangjian-question-C .zmiti-dangjian-q-title article > div {
         padding: 80px 30px; }
       .zmiti-content-main-ui .zmiti-dangjian-question-C .zmiti-dangjian-q-title .zmiti-dangjian-pager {

@@ -148,7 +148,7 @@ $viewW:640px;
 
      .zmiti-dangjian-q-scroll{
 
-    
+      
       
       &.left{
         @include transform(translate3d(-$viewW,0,0));
@@ -167,7 +167,7 @@ $viewW:640px;
         @include transform(translate3d($viewW,0,0));
         z-index: 3;
       }
-
+      width: $viewW;
       overflow: hidden;
       @include pos(a);
       box-sizing:border-box;
@@ -182,6 +182,12 @@ $viewW:640px;
         @include br(10px);
         font-size: 30px;
         line-height: 50px;
+        &>span{
+           color:#f66;
+           font-size: 24px;
+           @include pos(a);
+           top: -44px;
+        }
         
         box-sizing:border-box;
         @include pos(r);
