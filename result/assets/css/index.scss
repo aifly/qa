@@ -76,9 +76,11 @@ $viewW:640px;
         
         }
         .zmiti-dangjian-result-a-item{
-          height: 50px;
+          
+          margin: 10px 0;
           padding: 0 50px;
           box-sizing:border-box;
+          @include pos(r);
           span{
               padding: 10px 50px 10px 20px;
               text-align: left;
@@ -89,13 +91,18 @@ $viewW:640px;
             span{
               background: #f66;
               color:#fff;
+              @include br(10px);
+              display: inline-block;;
             }
             
           }
           &.right{
             &:after{
+              @include pos(a);
                 content:' √';
                 color:green;
+                font-weight: bold;
+                bottom: 0;
               }
           }
            &.error{

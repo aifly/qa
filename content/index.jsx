@@ -269,7 +269,7 @@ class ZmitiContentApp extends Component {
 
 
 		var idx = Math.random()*this.zmitiMap.length|0;
-		
+		return;
 		$.ajax({
 	   		url:'http://api.zmiti.com/v2/weixin/add_wxuser/',
 	   		type:'get',
