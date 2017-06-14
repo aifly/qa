@@ -21,7 +21,7 @@ class ZmitiResultApp extends Component {
 			break;
 			case "DANGJIAN":
 			var mainStyle = {
-					background:"#fff url(./assets/images/bg.png) no-repeat center top / cover "
+					background:"#fff url(./assets/images/bg.png) no-repeat center center / cover "
 				}
 				var arr = this.props.arr;
 				

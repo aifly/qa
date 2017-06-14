@@ -39,9 +39,9 @@
       -webkit-transform: translate3d(-640px, 0, 0) scale(0.85);
       transform: translate3d(-640px, 0, 0) scale(0.85); }
     .zmiti-content-main-ui .zmiti-dangjian-content-user .zmiti-dangjian-content-cover {
-      height: 65vh;
+      height: 50vh;
       width: 500px;
-      background: #fff;
+      background: rgba(255, 255, 255, 0.8);
       position: relative;
       display: -webkit-box;
       -webkit-box-align: center;
@@ -58,7 +58,7 @@
         box-shadow: 0 0 30px rgba(0, 0, 0, 0.2); }
       .zmiti-content-main-ui .zmiti-dangjian-content-user .zmiti-dangjian-content-cover .zmiti-dangjian-clock {
         width: 70px;
-        margin: 10vh auto; }
+        margin: 4vh auto 2vh; }
       .zmiti-content-main-ui .zmiti-dangjian-content-user .zmiti-dangjian-content-cover .zmiti-dangjian-content-input {
         border-bottom: 2px solid #ccc;
         height: 60px;
@@ -86,7 +86,7 @@
           color: #999; }
       .zmiti-content-main-ui .zmiti-dangjian-content-user .zmiti-dangjian-content-cover .zmiti-dangjian-all-duration {
         text-align: center;
-        color: #bbb; }
+        color: #aaa; }
     .zmiti-content-main-ui .zmiti-dangjian-content-user .zmiti-begin-answer-btn {
       margin-top: 5vh;
       font-size: 42px;
@@ -100,8 +100,8 @@
         -webkit-transform: translate3d(0, 4px, 0) scale(0.99);
         transform: translate3d(0, 4px, 0) scale(0.99); }
   .zmiti-content-main-ui .zmiti-dangjian-question-C {
-    -webkit-transform: translate3d(640px, 0, 0);
-    transform: translate3d(640px, 0, 0);
+    -webkit-transform: translate3d(640px, 0, 0) scale(0.8);
+    transform: translate3d(640px, 0, 0) scale(0.8);
     -webkit-transition: 0.4s;
     transition: 0.4s; }
     .zmiti-content-main-ui .zmiti-dangjian-question-C.active {
@@ -139,10 +139,11 @@
       width: 640px;
       overflow: hidden;
       position: absolute;
+      top: 70px;
       box-sizing: border-box; }
       .zmiti-content-main-ui .zmiti-dangjian-question-C .zmiti-dangjian-q-scroll.left {
-        -webkit-transform: translate3d(-640px, 0, 0);
-        transform: translate3d(-640px, 0, 0);
+        -webkit-transform: translate3d(-640px, 0, 0) scale(0.8);
+        transform: translate3d(-640px, 0, 0) scale(0.8);
         -webkit-transition: 0.35s;
         transition: 0.35s;
         z-index: 1; }
@@ -153,28 +154,34 @@
         transform: translate3d(0, 0, 0);
         -webkit-transition: 0.2s;
         transition: 0.2s;
-        z-index: 2; }
+        z-index: 32; }
       .zmiti-content-main-ui .zmiti-dangjian-question-C .zmiti-dangjian-q-scroll.right {
-        -webkit-transform: translate3d(640px, 0, 0);
-        transform: translate3d(640px, 0, 0);
+        -webkit-transform: translate3d(640px, 0, 0) scale(0.8);
+        transform: translate3d(640px, 0, 0) scale(0.8);
         z-index: 3; }
     .zmiti-content-main-ui .zmiti-dangjian-question-C .zmiti-dangjian-q-title {
       width: 90%;
-      margin: 80px auto;
-      background: #fff;
-      border: 1px solid #000;
+      margin: 130px auto;
+      background: rgba(255, 255, 255, 0.8);
       border-radius: 10px;
       font-size: 30px;
       line-height: 50px;
       box-sizing: border-box;
       position: relative; }
+      .zmiti-content-main-ui .zmiti-dangjian-question-C .zmiti-dangjian-q-title:before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); }
       .zmiti-content-main-ui .zmiti-dangjian-question-C .zmiti-dangjian-q-title > span {
         color: #f66;
         font-size: 24px;
         position: absolute;
         top: -44px; }
       .zmiti-content-main-ui .zmiti-dangjian-question-C .zmiti-dangjian-q-title article > div {
-        padding: 80px 30px; }
+        padding: 80px 30px 40px 30px; }
       .zmiti-content-main-ui .zmiti-dangjian-question-C .zmiti-dangjian-q-title .zmiti-dangjian-pager {
         width: 150px;
         height: 150px;
@@ -216,14 +223,24 @@
       width: 90%;
       margin: 70px auto; }
       .zmiti-content-main-ui .zmiti-dangjian-question-C .zmiti-dangjian-q-answer-list .zmiti-dangjian-q-item {
-        background: #fff;
-        border: 1px solid #000;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 10px;
+        position: relative;
         line-height: 50px;
         margin: 20px 0;
         border-radius: 10px;
         font-size: 32px;
         padding: 20px;
         box-sizing: border-box; }
+        .zmiti-content-main-ui .zmiti-dangjian-question-C .zmiti-dangjian-q-answer-list .zmiti-dangjian-q-item:before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          border-radius: 10px;
+          box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); }
         .zmiti-content-main-ui .zmiti-dangjian-question-C .zmiti-dangjian-q-answer-list .zmiti-dangjian-q-item.active {
           background: #f66;
           color: #fff;
@@ -237,6 +254,7 @@
         background: #f66;
         line-height: 70px;
         font-size: 40px;
+        border: 1px solid #fff;
         margin-top: 40px;
         -webkit-transition: 0.1s;
         transition: 0.1s; }
@@ -246,9 +264,9 @@
   .zmiti-content-main-ui .zmiti-dangjian-result-page {
     -webkit-transition: 0.3s;
     transition: 0.3s;
-    -webkit-transform: translate3d(640px, 0, 0);
-    transform: translate3d(640px, 0, 0);
-    background: #fff;
+    -webkit-transform: translate3d(640px, 0, 0) scale(0.8);
+    transform: translate3d(640px, 0, 0) scale(0.8);
+    background: rgba(255, 255, 255, 0.8);
     z-index: 5000; }
     .zmiti-content-main-ui .zmiti-dangjian-result-page.active {
       -webkit-transform: translate3d(0, 0, 0);
@@ -256,7 +274,7 @@
     .zmiti-content-main-ui .zmiti-dangjian-result-page .zmiti-dangjian-score-C {
       width: 90%;
       margin: 150px auto 50px;
-      background: #fff;
+      background: rgba(255, 255, 255, 0.8);
       border: 1px solid #000;
       text-align: center;
       padding: 150px 40px 40px;
@@ -277,7 +295,7 @@
         top: -110px;
         left: 50%;
         margin-left: -110px;
-        background: #fff;
+        background: rgba(255, 255, 255, 0.8);
         line-height: 190px; }
         .zmiti-content-main-ui .zmiti-dangjian-result-page .zmiti-dangjian-score-C .zmiti-dangjian-score svg {
           position: absolute;

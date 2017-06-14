@@ -130,14 +130,16 @@ $viewW:640px;
      height:100vh;
      @include displayBox(horizontal);
      .zmiti-dangjian-C{
-       width: 500px;
-       height: 80vh;
+       width: 450px;
+       height: 65vh;
        
        @include br(10px);
-       
+        
        .zmiti-dangjian-cover{
          height: 65vh;
-         background:#f66;
+         border:1px solid #fff;
+         @include br(10px);
+         background:rgba(255,102,102,.7);
          @include pos(r);
          &:before{
            content:"";
@@ -153,6 +155,7 @@ $viewW:640px;
        .zmiti-index-logo{
           @include pos(a);
           width: 70px;
+          height: 70px;
           border:2px solid #Fff;
           @include br(50%);
           padding: 14px;
@@ -161,14 +164,27 @@ $viewW:640px;
           background: #f66;
           margin-left: -50px;
           z-index: 1;
+          &:after{
+            content:'';
+            $size:30px;
+            width: $size;
+            height: $size;
+            border:2px solid #fff;
+            @include pos(a);
+            @include br(50%);
+            left: 50%;
+            top: 50%;
+            margin-top: -$size/2;
+            margin-left: -$size/2;
+          }
           img{vertical-align:bottom;@include pos(r);top:-2px;}
        }
        .zmiti-index-title{
         width: 360px;
         @include pos(a);
-        height: 34vh;
+        height:28vh;
         background: #fff;
-        bottom: 4vh;
+        bottom: 10vh;
         z-index: 0;
         left: 50%;
         margin-left: -180px;
@@ -176,6 +192,7 @@ $viewW:640px;
         text-align: center;
         font-size: 70px;
         padding: 10px;
+        @include displayBox(horizontal);
         box-sizing:border-box;
         &:after{
           content:"";
@@ -193,6 +210,9 @@ $viewW:640px;
          margin-top: 5vh;
          @include br(10px);
          font-size: 42px;
+         border:1px solid #fff;
+         @include pos(a);
+         left: 70px;
          @include transition(.1s);
          &.active{
            @include transform(translate3d(0,4px,0) scale(.99));

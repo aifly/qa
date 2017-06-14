@@ -46,10 +46,17 @@ export class App extends Component {
 			theme:this.state.theme,
 			title:this.state.title,
 			duration:this.state.duration,
+			totalDuration:this.state.totalDuration,
 			question:this.state.question,
 			myAnswer:this.state.myAnswer,
 			arr:this.state.arr
 		}
+
+
+		var ZmitiCustomApp = null;
+			if(this.state.custom && this.state.custom.indexOf('Zmiti')>-1 && this.state.custom.indexOf('App')>-1){
+				var ZmitiCustomApp = require('./'+this.state.custom.replace(/Zmiti/ig,'').replace(/App/ig,'').toLowerCase()+'/index.jsx');
+			}
 
 		return (
 			<div className='zmiti-main-ui' style={mainStyle}>
@@ -57,6 +64,7 @@ export class App extends Component {
 				{!this.state.showLoading && <ZmitiIndexApp {...data}></ZmitiIndexApp>}
 				{!this.state.showLoading && <ZmitiContentApp {...data}></ZmitiContentApp>}
 				{!this.state.showLoading && <ZmitiResultApp {...data}></ZmitiResultApp>}
+				{ZmitiCustomApp &&<ZmitiCustomApp {...data}></ZmitiCustomApp>}
 			</div>
 		);
 	}
@@ -318,14 +326,16 @@ export class App extends Component {
 				s.setState({
 					showLoading:false
 				});
-
 			});
 
+			
 
+			this.state.custom = data.custom;
 			this.state.indexBg = data.indexBg;
 			this.state.title = data.title;
 			this.state.theme = data.theme;
 			this.state.duration = data.duration;
+			this.state.totalDuration = data.duration;
 			this.state.question = data.question;
 			this.wxConfig(data.shareTitle,data.shareDesc,data.shareImg);
 			this.forceUpdate(()=>{
@@ -343,13 +353,16 @@ export class App extends Component {
 			window.s = this;
 
 			obserable.on('countdown',()=>{
-				if(this.state.duration <=0){
-					clearInterval(this.timer);
-				}
+
 				this.timer = setInterval(()=>{
+					if(this.state.duration <=0){
+						clearInterval(this.timer);
+						obserable.trigger({type:'submitPaper'})
+					}
 					this.setState({
 						duration:this.state.duration - 1
 					});
+
 				},1000);
 			});
 

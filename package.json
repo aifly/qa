@@ -6,7 +6,7 @@
   "author": "fly",
   "license": "MIT",
   "scripts": {
-    "start": "webpack-dev-server --hot --inline --port 3004"
+    "start": "webpack-dev-server --hot --inline --port 3008"
   },
   "dependencies": {
     "antd": "^2.7.2",

@@ -11,7 +11,7 @@ var webpack = require('webpack');
      },
      devServer: {
          inline: true,
-         port: 3004,
+         port: 3008,
          hot: true
      },
      externals:{

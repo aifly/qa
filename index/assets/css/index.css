@@ -8,7 +8,8 @@
   height: 100%;
   position: absolute;
   left: 0;
-  top: 0; }
+  top: 0;
+  overflow: hidden; }
 
 .zmiti-index-main-ui {
   -webkit-transition: 0.6s;
@@ -125,12 +126,14 @@
     -webkit-box-pack: center;
     -webkit-box-orient: horizontal; }
     .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C {
-      width: 500px;
-      height: 80vh;
+      width: 450px;
+      height: 65vh;
       border-radius: 10px; }
       .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-dangjian-cover {
         height: 65vh;
-        background: #f66;
+        border: 1px solid #fff;
+        border-radius: 10px;
+        background: rgba(255, 102, 102, 0.7);
         position: relative; }
         .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-dangjian-cover:before {
           content: "";
@@ -144,6 +147,7 @@
       .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-index-logo {
         position: absolute;
         width: 70px;
+        height: 70px;
         border: 2px solid #Fff;
         border-radius: 50%;
         padding: 14px;
@@ -152,6 +156,17 @@
         background: #f66;
         margin-left: -50px;
         z-index: 1; }
+        .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-index-logo:after {
+          content: '';
+          width: 30px;
+          height: 30px;
+          border: 2px solid #fff;
+          position: absolute;
+          border-radius: 50%;
+          left: 50%;
+          top: 50%;
+          margin-top: -15px;
+          margin-left: -15px; }
         .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-index-logo img {
           vertical-align: bottom;
           position: relative;
@@ -159,9 +174,9 @@
       .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-index-title {
         width: 360px;
         position: absolute;
-        height: 34vh;
+        height: 28vh;
         background: #fff;
-        bottom: 4vh;
+        bottom: 10vh;
         z-index: 0;
         left: 50%;
         margin-left: -180px;
@@ -169,6 +184,10 @@
         text-align: center;
         font-size: 70px;
         padding: 10px;
+        display: -webkit-box;
+        -webkit-box-align: center;
+        -webkit-box-pack: center;
+        -webkit-box-orient: horizontal;
         box-sizing: border-box; }
         .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-index-title:after {
           content: "";
@@ -183,6 +202,9 @@
         margin-top: 5vh;
         border-radius: 10px;
         font-size: 42px;
+        border: 1px solid #fff;
+        position: absolute;
+        left: 70px;
         -webkit-transition: 0.1s;
         transition: 0.1s; }
         .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-begin-btn.active {
