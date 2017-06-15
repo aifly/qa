@@ -129,8 +129,6 @@
 			};
 			this.viewW = document.documentElement.clientWidth;
 			this.viewH = document.documentElement.clientHeight;
-
-			this.zmitiMap = [{ "name": "北京市", "log": "116.46", "lat": "39.92" }, { "name": "上海市", "log": "121.48", "lat": "31.22" }, { "name": "天津市", "log": "117.2", "lat": "39.13" }, { "name": "重庆市", "log": "106.54", "lat": "29.59" }, { "name": "石家庄", "log": "114.48", "lat": "38.03" }, { "name": "太原市", "log": "112.53", "lat": "37.87" }, { "name": "沈阳市", "log": "123.38", "lat": "41.8" }, { "name": "长春市", "log": "125.35", "lat": "43.88" }, { "name": "哈尔滨市", "log": "126.63", "lat": "45.75" }, { "name": "杭州市", "log": "120.19", "lat": "30.26" }, { "name": "福州市", "log": "119.3", "lat": "26.08" }, { "name": "济南市", "log": "106.54", "lat": "29.59" }, { "name": "郑州市", "log": "113.65", "lat": "34.76" }, { "name": "武汉市", "log": "114.31", "lat": "30.52" }, { "name": "长沙市", "log": "113", "lat": "28.21" }, { "name": "广州市", "log": "113.23", "lat": "23.16" }, { "name": "海口市", "log": "110.35", "lat": "20.02" }, { "name": "成都市", "log": "104.06", "lat": "30.67" }, { "name": "贵阳市", "log": "106.71", "lat": "26.57" }, { "name": "昆明市", "log": "102.73", "lat": "25.04" }, { "name": "南昌市", "log": "115.89", "lat": "28.68" }, { "name": "西安市", "log": "108.95", "lat": "34.27" }, { "name": "西宁市", "log": "101.74", "lat": "36.56" }, { "name": "兰州市", "log": "103.73", "lat": "36.03" }, { "name": "南宁市", "log": "106.54", "lat": "29.59" }, { "name": "乌鲁木齐市", "log": "87.68", "lat": "43.77" }, { "name": "呼和浩特市", "log": "111.65", "lat": "40.82" }, { "name": "拉萨市", "log": "91.11", "lat": "29.97" }, { "name": "银川市", "log": "106.27", "lat": "38.47" }, { "name": "台北市", "log": "121.5", "lat": "25.14" }, { "name": "香港", "log": "114.17", "lat": "22.27" }, { "name": "澳门", "log": "113.33", "lat": "22.13" }, { "name": "合肥市", "log": "117.27", "lat": "31.86" }, { "name": "南京市", "log": "118.78", "lat": "32.04" }];
 		}
 
 		_createClass(App, [{
@@ -166,7 +164,7 @@
 				return _react2['default'].createElement(
 					'div',
 					{ className: 'zmiti-main-ui', style: mainStyle },
-					this.state.showLoading && _react2['default'].createElement(_loadingIndexJsx2['default'], { myHeadImg: this.state.headimgurl, progress: this.state.progress }),
+					this.state.showLoading && _react2['default'].createElement(_loadingIndexJsx2['default'], { progress: this.state.progress }),
 					!this.state.showLoading && _react2['default'].createElement(_indexIndexJsx2['default'], data),
 					!this.state.showLoading && _react2['default'].createElement(_contentIndexJsx2['default'], _extends({}, this.state, data)),
 					!this.state.showLoading && _react2['default'].createElement(_resultIndexJsx2['default'], data),
@@ -212,24 +210,6 @@
 					url: 'http://restapi.amap.com/v3/geocode/regeo?key=10df4af5d9266f83b404c007534f0001&location=' + wx.posData.longitude + ',' + wx.posData.latitude + '&poitype=&radius=100&extensions=base&batch=false&roadlevel=1' + '',
 					type: 'get',
 					error: function error() {},
-					cancel: function cancel() {
-
-						var idx = Math.random() * s.zmitiMap.length | 0;
-
-						var latitude = s.zmitiMap[idx].lat; // 纬度，浮点数，范围为90 ~ -90
-
-						var longitude = s.zmitiMap[idx].log; // 经度，浮点数，范围为180 ~ -180。
-
-						var accuracy = 100; // 位置精度
-						wx.posData = {
-							longitude: longitude,
-							latitude: latitude,
-							accuracy: accuracy
-						};
-						if ((s.nickname || s.headimgurl) && s.openid) {
-							s.getPos(s.nickname, s.headimgurl);
-						}
-					},
 					success: function success(data) {
 						if (data.status === '1' && data.infocode === '10000') {
 
@@ -287,7 +267,26 @@
 									alert('add_wxuser: 服务器返回错误');
 								},
 								success: function success(data) {
-									if (data.getret === 0) {} else {
+									if (data.getret === 0) {
+
+										_jquery2['default'].ajax({
+											url: 'http://api.zmiti.com/v2/weixin/get_wxuserdetaile',
+											data: {
+												wxopenid: s.openid
+											},
+											success: function success(data) {
+												if (data.getret === 0) {
+
+													s.score = data.wxuserinfo.totalintegral;
+													s.setState({
+														score: s.score
+													});
+												} else {
+													alert('get_wxuserdetaile : getret  : ' + data.getret + ' msg : ' + data.getmsg);
+												}
+											}
+										});
+									} else {
 										alert('getret  : ' + data.getret + ' msg : ' + data.getmsg + ' .....');
 									}
 								}
@@ -326,7 +325,7 @@
 
 				_jquery2['default'].ajax({
 					type: 'get',
-					url: "http://api.zmiti.com/weixin/jssdk.php?type=signature&durl=" + code_durl + "&worksid=" + worksid,
+					url: "http://api.zmiti.com/weixin/jssdk.php?type=signature&durl=" + code_durl,
 					dataType: 'jsonp',
 					jsonp: "callback",
 					jsonpCallback: "jsonFlickrFeed",
@@ -345,9 +344,7 @@
 
 							wx.getLocation({
 								type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-								fail: function fail() {
-									alert('location fail');
-								},
+								fail: function fail() {},
 								success: function success(res) {
 									var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
 									var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
@@ -359,6 +356,7 @@
 										latitude: latitude,
 										accuracy: accuracy
 									};
+
 									if ((s.nickname || s.headimgurl) && s.openid) {
 										s.getPos(s.nickname, s.headimgurl);
 									}
@@ -405,6 +403,15 @@
 
 				var s = this;
 				_jquery2['default'].getJSON('./assets/js/data.json', function (data) {
+					s.loading(data.loadingImg, function (scale) {
+						s.setState({
+							progress: (scale * 100 | 0) + '%'
+						});
+					}, function () {
+						s.setState({
+							showLoading: false
+						});
+					});
 
 					_this3.state.custom = data.custom;
 					_this3.state.indexBg = data.indexBg;
@@ -417,19 +424,7 @@
 					_this3.state.question = data.question;
 					_this3.state.worksid = data.worksid;
 					_this3.worksid = data.worksid;
-					_this3.state.wxappid = data.wxappid;
-					_this3.state.wxappsecret = data.wxappsecret;
-					_this3.state.custom = data.custom;
-					_this3.state.level = data.level;
-					_this3.state.questionType = data.questionType;
-					_this3.state.shareDesc = data.shareDesc || '';
-					_this3.state.shareTitle = data.shareTitle || '';
-					_this3.state.shareImg = data.shareImg;
-					_this3.state.showLevel = data.showLevel;
-					_this3.state.title = data.title;
-					document.title = _this3.state.title;
-					_this3.state.wxConfig = _this3.wxConfig.bind(_this3);
-
+					_this3.wxConfig(data.shareTitle, data.shareDesc, data.shareImg, _this3.worksid);
 					_this3.forceUpdate(function () {
 						obserable.trigger({
 							type: 'setQuestionScroll'
@@ -465,47 +460,6 @@
 						_this3.forceUpdate();
 					});
 
-					obserable.on('modifyShareInfo', function (data) {
-						_this3.setState({
-							shareTitle: data.title,
-							shareDesc: data.desc
-						});
-					});
-
-					_this3.setState({
-						showLoading: true
-					});
-
-					if (localStorage.getItem('nickname' + s.worksid) && localStorage.getItem('headimgurl' + s.worksid) && localStorage.getItem('openid' + s.worksid)) {
-
-						s.setState({
-							headimgurl: localStorage.getItem('headimgurl' + s.worksid)
-						});
-						s.loading(data.loadingImg, function (scale) {
-							s.setState({
-								progress: (scale * 100 | 0) + '%'
-							});
-						}, function () {
-
-							s.openid = localStorage.getItem('openid' + s.worksid);
-							s.nickname = localStorage.getItem('nickname' + s.worksid);
-							s.headimgurl = localStorage.getItem('headimgurl' + s.worksid);
-
-							s.setState({
-								showLoading: false,
-								nickname: s.nickname,
-								headimgurl: s.headimgurl,
-								openid: s.openid
-							});
-
-							s.wxConfig(s.state.title, s.state.title, data.shareImg, data.appId, s.worksid);
-							if (wx.posData && wx.posData.longitude) {
-								s.getPos(s.nickname, s.headimgurl);
-							}
-						});
-						return;
-					}
-
 					_jquery2['default'].ajax({
 						url: 'http://api.zmiti.com/v2/weixin/getwxuserinfo/',
 						data: {
@@ -518,34 +472,31 @@
 
 							if (dt.getret === 0) {
 								s.setState({
-									headimgurl: dt.userinfo.headimgurl
+									showLoading: true
 								});
 								s.loading(data.loadingImg, function (scale) {
 									s.setState({
 										progress: (scale * 100 | 0) + '%'
 									});
 								}, function () {
+									s.setState({
+										showLoading: false
+									});
 
-									//s.defaultName = dt.userinfo.nickname || data.username || '智媒体';
+									s.defaultName = dt.userinfo.nickname || data.username || '智媒体';
 
-									localStorage.setItem('nickname' + s.worksid, dt.userinfo.nickname);
-									localStorage.setItem('headimgurl' + s.worksid, dt.userinfo.headimgurl);
-									localStorage.setItem('openid' + s.worksid, dt.userinfo.openid);
+									localStorage.setItem('nickname', dt.userinfo.nickname);
+									localStorage.setItem('headimgurl', dt.userinfo.headimgurl);
 									s.openid = dt.userinfo.openid;
 									s.nickname = dt.userinfo.nickname;
 									s.headimgurl = dt.userinfo.headimgurl;
 
-									s.setState({
-										showLoading: false,
-										nickname: s.nickname,
-										headimgurl: s.headimgurl,
-										openid: s.openid
-									});
-
-									s.wxConfig(s.state.title, s.state.title, data.shareImg, data.appId, s.worksid);
 									if (wx.posData && wx.posData.longitude) {
 										s.getPos(dt.userinfo.nickname, dt.userinfo.headimgurl);
 									}
+
+									s.state.myHeadImg = dt.userinfo.headimgurl;
+									s.forceUpdate();
 								});
 							} else {
 
@@ -608,6 +559,14 @@
 							}
 						}
 					});
+
+					_this3.defaultName = data.username;
+
+					s.defaultName = localStorage.getItem('nickname') || '';
+
+					s.headimgurl = localStorage.getItem('headimgurl');
+
+					s.forceUpdate();
 				});
 
 				(0, _jquery2['default'])(document).one('touchstart', function () {
@@ -35275,8 +35234,7 @@
 						if (!_this2.props.needInfo) {
 							//不需要收集姓名和电话信息
 							obserable.trigger({
-								type: 'beginAnswer',
-								data: 0
+								type: 'beginAnswer'
 							});
 						}
 					}, time);
@@ -35338,7 +35296,7 @@
 
 
 	// module
-	exports.push([module.id, "/*.ant-btn:focus, .ant-btn:hover,.ant-input:focus, .ant-input:hover {\r\n    background-color: #fff;\r\n    border-color: #bf1616;\r\n    box-shadow: 0 0 0 2px rgba(191, 22, 22, 0.1);\r\n}*/\r\n.lt-full {\r\n  width: 100%;\r\n  height: 100%;\r\n  position: absolute;\r\n  left: 0;\r\n  top: 0;\r\n  overflow: hidden; }\r\n\r\n.zmiti-index-main-ui {\r\n  -webkit-transition: 0.6s;\r\n  transition: 0.6s; }\r\n  .zmiti-index-main-ui.hide {\r\n    -webkit-transform: translate3d(-640px, 0, 0) scale(0.85);\r\n    transform: translate3d(-640px, 0, 0) scale(0.85); }\r\n  .zmiti-index-main-ui .zmiti-index-paper-theme {\r\n    position: absolute;\r\n    width: 640px;\r\n    height: 100vh;\r\n    left: 50%;\r\n    margin-left: -320px; }\r\n    .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-title {\r\n      position: absolute;\r\n      color: #842d18;\r\n      top: 30%;\r\n      font-size: 40px;\r\n      width: 90%;\r\n      left: 5%;\r\n      text-align: center; }\r\n    .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-btn {\r\n      color: #842d18;\r\n      position: absolute;\r\n      top: 66%;\r\n      font-size: 36px;\r\n      width: 220px;\r\n      left: 50%;\r\n      height: 60px;\r\n      line-height: 60px;\r\n      margin-left: -110px;\r\n      text-align: center;\r\n      border: 1px solid #842d18;\r\n      border-radius: 10px; }\r\n      .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-btn.active {\r\n        -webkit-transform: scale(0.95);\r\n        transform: scale(0.95);\r\n        -webkit-transition: 0.1s;\r\n        transition: 0.1s; }\r\n        .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-btn.active:before {\r\n          content: '';\r\n          border-radius: 10px;\r\n          box-shadow: 0 0 50px rgba(156, 86, 50, 0.8);\r\n          position: absolute;\r\n          width: 100%;\r\n          height: 100%;\r\n          left: 0;\r\n          top: 0; }\r\n    .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-form {\r\n      width: 460px;\r\n      height: 340px;\r\n      position: absolute;\r\n      left: 50%;\r\n      border-radius: 20px;\r\n      margin-left: -230px;\r\n      -webkit-transform: translate3d(0, -800px, 0);\r\n      transform: translate3d(0, -800px, 0);\r\n      -webkit-transition: 0.5s;\r\n      transition: 0.5s;\r\n      -webkit-transition-timing-function: cubic-bezier(0.49, 1.52, 0.38, 0.84);\r\n      transition-timing-function: cubic-bezier(0.49, 1.52, 0.38, 0.84);\r\n      top: 30%;\r\n      background: #e8dbc5; }\r\n      .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-form.active {\r\n        -webkit-transform: translate3d(0, 0, 0);\r\n        transform: translate3d(0, 0, 0); }\r\n      .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-form .zmiti-form-title {\r\n        text-align: center;\r\n        height: 80px;\r\n        line-height: 80px;\r\n        font-size: 32px; }\r\n      .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-form .zmiti-form-input {\r\n        text-align: center;\r\n        margin: 20px 0; }\r\n        .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-form .zmiti-form-input input {\r\n          border: 1px solid #999;\r\n          width: 260px;\r\n          height: 38px;\r\n          font-size: 26px;\r\n          -webkit-appearance: none;\r\n          padding: 0 10px;\r\n          border-radius: 6px;\r\n          box-sizing: border-box;\r\n          outline: none; }\r\n      .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-form .zmiti-main-submit {\r\n        width: 100px;\r\n        height: 40px;\r\n        line-height: 40px;\r\n        text-align: center;\r\n        background: #b98c45;\r\n        color: #fff;\r\n        border-radius: 6px;\r\n        margin: 60px auto;\r\n        border: 1px solid #8a6530; }\r\n        .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-form .zmiti-main-submit.active {\r\n          -webkit-transform: scale(0.95);\r\n          transform: scale(0.95);\r\n          -webkit-transition: 0.1s;\r\n          transition: 0.1s; }\r\n          .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-form .zmiti-main-submit.active:before {\r\n            content: '';\r\n            border-radius: 10px;\r\n            box-shadow: 0 0 50px rgba(138, 101, 48, 0.8);\r\n            position: absolute;\r\n            width: 100%;\r\n            height: 100%;\r\n            left: 0;\r\n            top: 0; }\r\n  .zmiti-index-main-ui .zmiti-index-dangjian-theme {\r\n    width: 640px;\r\n    height: 100vh;\r\n    display: -webkit-box;\r\n    -webkit-box-align: center;\r\n    -webkit-box-pack: center;\r\n    -webkit-box-orient: horizontal; }\r\n    .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C {\r\n      width: 450px;\r\n      height: 65vh;\r\n      border-radius: 10px; }\r\n      .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-dangjian-cover {\r\n        height: 65vh;\r\n        border: 1px solid #fff;\r\n        border-radius: 10px;\r\n        background: rgba(255, 102, 102, 0.7);\r\n        position: relative; }\r\n        .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-dangjian-cover:before {\r\n          content: \"\";\r\n          position: absolute;\r\n          width: 100%;\r\n          height: 100%;\r\n          left: 0;\r\n          top: 0;\r\n          border-radius: 10px;\r\n          box-shadow: 0 0 30px rgba(0, 0, 0, 0.2); }\r\n      .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-index-logo {\r\n        position: absolute;\r\n        width: 70px;\r\n        height: 70px;\r\n        border: 2px solid #Fff;\r\n        border-radius: 50%;\r\n        padding: 14px;\r\n        top: 200px;\r\n        left: 50%;\r\n        background: #f66;\r\n        margin-left: -50px;\r\n        z-index: 1; }\r\n        .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-index-logo:after {\r\n          content: '';\r\n          width: 30px;\r\n          height: 30px;\r\n          border: 2px solid #fff;\r\n          position: absolute;\r\n          border-radius: 50%;\r\n          left: 50%;\r\n          top: 50%;\r\n          margin-top: -15px;\r\n          margin-left: -15px; }\r\n        .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-index-logo img {\r\n          vertical-align: bottom;\r\n          position: relative;\r\n          top: -2px; }\r\n      .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-index-title {\r\n        width: 360px;\r\n        position: absolute;\r\n        height: 28vh;\r\n        background: #fff;\r\n        bottom: 10vh;\r\n        z-index: 0;\r\n        left: 50%;\r\n        margin-left: -180px;\r\n        color: #f66;\r\n        text-align: center;\r\n        font-size: 60px;\r\n        padding: 16px 10px 10px 10px;\r\n        display: -webkit-box;\r\n        -webkit-box-align: center;\r\n        -webkit-box-pack: center;\r\n        -webkit-box-orient: horizontal;\r\n        box-sizing: border-box; }\r\n        .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-index-title:after {\r\n          content: \"\";\r\n          position: absolute;\r\n          width: 0;\r\n          height: 0;\r\n          border-bottom: 40px solid #f66;\r\n          border-left: 40px solid transparent;\r\n          bottom: 2vh;\r\n          right: 2vh; }\r\n      .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-begin-btn {\r\n        margin-top: 5vh;\r\n        border-radius: 10px;\r\n        font-size: 42px;\r\n        border: 1px solid #fff;\r\n        position: absolute;\r\n        left: 70px;\r\n        -webkit-transition: 0.1s;\r\n        transition: 0.1s; }\r\n        .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-begin-btn.active {\r\n          -webkit-transform: translate3d(0, 4px, 0) scale(0.99);\r\n          transform: translate3d(0, 4px, 0) scale(0.99); }\r\n      .zmiti-btn {\r\n        width: 500px;\r\n        height: 10vh;\r\n        line-height: 10vh;\r\n        text-align: center;\r\n        color: #fff;\r\n        background: #f66; }\r\n\r\n/*# sourceMappingURL=index.css.map */", ""]);
+	exports.push([module.id, "/*.ant-btn:focus, .ant-btn:hover,.ant-input:focus, .ant-input:hover {\r\n    background-color: #fff;\r\n    border-color: #bf1616;\r\n    box-shadow: 0 0 0 2px rgba(191, 22, 22, 0.1);\r\n}*/\r\n.lt-full {\r\n  width: 100%;\r\n  height: 100%;\r\n  position: absolute;\r\n  left: 0;\r\n  top: 0;\r\n  overflow: hidden; }\r\n\r\n.zmiti-index-main-ui {\r\n  -webkit-transition: 0.6s;\r\n  transition: 0.6s; }\r\n  .zmiti-index-main-ui.hide {\r\n    -webkit-transform: translate3d(-640px, 0, 0) scale(0.85);\r\n    transform: translate3d(-640px, 0, 0) scale(0.85); }\r\n  .zmiti-index-main-ui .zmiti-index-paper-theme {\r\n    position: absolute;\r\n    width: 640px;\r\n    height: 100vh;\r\n    left: 50%;\r\n    margin-left: -320px; }\r\n    .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-title {\r\n      position: absolute;\r\n      color: #842d18;\r\n      top: 30%;\r\n      font-size: 40px;\r\n      width: 90%;\r\n      left: 5%;\r\n      text-align: center; }\r\n    .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-btn {\r\n      color: #842d18;\r\n      position: absolute;\r\n      top: 66%;\r\n      font-size: 36px;\r\n      width: 220px;\r\n      left: 50%;\r\n      height: 60px;\r\n      line-height: 60px;\r\n      margin-left: -110px;\r\n      text-align: center;\r\n      border: 1px solid #842d18;\r\n      border-radius: 10px; }\r\n      .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-btn.active {\r\n        -webkit-transform: scale(0.95);\r\n        transform: scale(0.95);\r\n        -webkit-transition: 0.1s;\r\n        transition: 0.1s; }\r\n        .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-btn.active:before {\r\n          content: '';\r\n          border-radius: 10px;\r\n          box-shadow: 0 0 50px rgba(156, 86, 50, 0.8);\r\n          position: absolute;\r\n          width: 100%;\r\n          height: 100%;\r\n          left: 0;\r\n          top: 0; }\r\n    .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-form {\r\n      width: 460px;\r\n      height: 340px;\r\n      position: absolute;\r\n      left: 50%;\r\n      border-radius: 20px;\r\n      margin-left: -230px;\r\n      -webkit-transform: translate3d(0, -800px, 0);\r\n      transform: translate3d(0, -800px, 0);\r\n      -webkit-transition: 0.5s;\r\n      transition: 0.5s;\r\n      -webkit-transition-timing-function: cubic-bezier(0.49, 1.52, 0.38, 0.84);\r\n      transition-timing-function: cubic-bezier(0.49, 1.52, 0.38, 0.84);\r\n      top: 30%;\r\n      background: #e8dbc5; }\r\n      .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-form.active {\r\n        -webkit-transform: translate3d(0, 0, 0);\r\n        transform: translate3d(0, 0, 0); }\r\n      .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-form .zmiti-form-title {\r\n        text-align: center;\r\n        height: 80px;\r\n        line-height: 80px;\r\n        font-size: 32px; }\r\n      .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-form .zmiti-form-input {\r\n        text-align: center;\r\n        margin: 20px 0; }\r\n        .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-form .zmiti-form-input input {\r\n          border: 1px solid #999;\r\n          width: 260px;\r\n          height: 38px;\r\n          font-size: 26px;\r\n          -webkit-appearance: none;\r\n          padding: 0 10px;\r\n          border-radius: 6px;\r\n          box-sizing: border-box;\r\n          outline: none; }\r\n      .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-form .zmiti-main-submit {\r\n        width: 100px;\r\n        height: 40px;\r\n        line-height: 40px;\r\n        text-align: center;\r\n        background: #b98c45;\r\n        color: #fff;\r\n        border-radius: 6px;\r\n        margin: 60px auto;\r\n        border: 1px solid #8a6530; }\r\n        .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-form .zmiti-main-submit.active {\r\n          -webkit-transform: scale(0.95);\r\n          transform: scale(0.95);\r\n          -webkit-transition: 0.1s;\r\n          transition: 0.1s; }\r\n          .zmiti-index-main-ui .zmiti-index-paper-theme .zmiti-main-form .zmiti-main-submit.active:before {\r\n            content: '';\r\n            border-radius: 10px;\r\n            box-shadow: 0 0 50px rgba(138, 101, 48, 0.8);\r\n            position: absolute;\r\n            width: 100%;\r\n            height: 100%;\r\n            left: 0;\r\n            top: 0; }\r\n  .zmiti-index-main-ui .zmiti-index-dangjian-theme {\r\n    width: 640px;\r\n    height: 100vh;\r\n    display: -webkit-box;\r\n    -webkit-box-align: center;\r\n    -webkit-box-pack: center;\r\n    -webkit-box-orient: horizontal; }\r\n    .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C {\r\n      width: 450px;\r\n      height: 65vh;\r\n      border-radius: 10px; }\r\n      .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-dangjian-cover {\r\n        height: 65vh;\r\n        border: 1px solid #fff;\r\n        border-radius: 10px;\r\n        background: rgba(255, 102, 102, 0.7);\r\n        position: relative; }\r\n        .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-dangjian-cover:before {\r\n          content: \"\";\r\n          position: absolute;\r\n          width: 100%;\r\n          height: 100%;\r\n          left: 0;\r\n          top: 0;\r\n          border-radius: 10px;\r\n          box-shadow: 0 0 30px rgba(0, 0, 0, 0.2); }\r\n      .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-index-logo {\r\n        position: absolute;\r\n        width: 70px;\r\n        height: 70px;\r\n        border: 2px solid #Fff;\r\n        border-radius: 50%;\r\n        padding: 14px;\r\n        top: 200px;\r\n        left: 50%;\r\n        background: #f66;\r\n        margin-left: -50px;\r\n        z-index: 1; }\r\n        .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-index-logo:after {\r\n          content: '';\r\n          width: 30px;\r\n          height: 30px;\r\n          border: 2px solid #fff;\r\n          position: absolute;\r\n          border-radius: 50%;\r\n          left: 50%;\r\n          top: 50%;\r\n          margin-top: -15px;\r\n          margin-left: -15px; }\r\n        .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-index-logo img {\r\n          vertical-align: bottom;\r\n          position: relative;\r\n          top: -2px; }\r\n      .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-index-title {\r\n        width: 360px;\r\n        position: absolute;\r\n        height: 28vh;\r\n        background: #fff;\r\n        bottom: 10vh;\r\n        z-index: 0;\r\n        left: 50%;\r\n        margin-left: -180px;\r\n        color: #f66;\r\n        text-align: center;\r\n        font-size: 70px;\r\n        padding: 10px;\r\n        display: -webkit-box;\r\n        -webkit-box-align: center;\r\n        -webkit-box-pack: center;\r\n        -webkit-box-orient: horizontal;\r\n        box-sizing: border-box; }\r\n        .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-index-title:after {\r\n          content: \"\";\r\n          position: absolute;\r\n          width: 0;\r\n          height: 0;\r\n          border-bottom: 40px solid #f66;\r\n          border-left: 40px solid transparent;\r\n          bottom: 2vh;\r\n          right: 2vh; }\r\n      .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-begin-btn {\r\n        margin-top: 5vh;\r\n        border-radius: 10px;\r\n        font-size: 42px;\r\n        border: 1px solid #fff;\r\n        position: absolute;\r\n        left: 70px;\r\n        -webkit-transition: 0.1s;\r\n        transition: 0.1s; }\r\n        .zmiti-index-main-ui .zmiti-index-dangjian-theme .zmiti-dangjian-C .zmiti-begin-btn.active {\r\n          -webkit-transform: translate3d(0, 4px, 0) scale(0.99);\r\n          transform: translate3d(0, 4px, 0) scale(0.99); }\r\n      .zmiti-btn {\r\n        width: 500px;\r\n        height: 10vh;\r\n        line-height: 10vh;\r\n        text-align: center;\r\n        color: #fff;\r\n        background: #f66; }\r\n\r\n/*# sourceMappingURL=index.css.map */", ""]);
 
 	// exports
 
@@ -35355,7 +35313,7 @@
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -35397,7 +35355,7 @@
 			this.state = {
 				toast: '',
 				username: '',
-				tel: '',
+				tel: '15555555555',
 				currentQid: 0,
 				score: 0,
 				currentAnswer: []
@@ -35771,7 +35729,6 @@
 				this.setState({
 					submit: true
 				});
-				var s = this;
 				var score = 0;
 				var obserable = this.props.obserable;
 
@@ -35812,34 +35769,11 @@
 					}
 				});
 
-				score >= 100 && (score = 100);
-
-				var level = '';
-				this.props.level.map(function (item, i) {
-					if (score <= item.score) {
-						level = item.name;
-					}
-				});
-
-				if (!this.props.showLevel) {
-					level = score + '分';
-				}
-
-				obserable.trigger({
-					type: "modifyShareInfo",
-					data: {
-						title: s.props.shareTitle.replace(/{username}/, s.state.username || s.props.nickname).replace(/{score}/ig, score).replace(/{level}/ig, level),
-						desc: s.props.shareDesc.replace(/{username}/, s.state.username || s.props.nickname).replace(/{score}/ig, score).replace(/{level}/ig, level)
-					}
-				});
-
-				setTimeout(function () {
-					s.props.wxConfig(s.props.shareTitle, s.props.shareDesc, s.props.shareImg, s.props.appId, s.props.worksid);
-				}, 100);
-
 				obserable.trigger({
 					type: 'clearCountdown'
 				});
+
+				score >= 100 && (score = 100);
 
 				setTimeout(function () {
 					_this2.setState({
@@ -35853,10 +35787,6 @@
 				var s = this;
 
 				var idx = Math.random() * this.zmitiMap.length | 0;
-
-				for (var attr in p) {
-					alert('attr => ' + attr + ' \n + value => ' + p[attr]);
-				}
 				_jquery2['default'].ajax({
 					url: 'http://api.zmiti.com/v2/weixin/postqascore/',
 					type: 'get',
@@ -35870,7 +35800,7 @@
 						longitude: s.props.longitude || s.zmitiMap[idx].log,
 						latitude: s.props.latitude || s.zmitiMap[idx].lat,
 						accuracy: s.props.accuracy || 100,
-						customid: -1, //对应的订制的id
+						customid: '', //对应的订制的id
 						usetime: s.props.totalDuration - s.props.duration,
 						totaltime: s.props.totalDuration,
 						wxappid: s.props.wxappid || 'wxfacf4a639d9e3bcc',
@@ -35976,7 +35906,6 @@
 			value: function beginAnswer() {
 				var _this6 = this;
 
-				var time = arguments.length <= 0 || arguments[0] === undefined ? 200 : arguments[0];
 				//
 
 				if (this.props.needInfo && (this.state.username.length <= 0 || this.state.tel.length <= 0)) {
@@ -36019,7 +35948,7 @@
 					obserable.trigger({
 						type: 'setQuestionScroll'
 					});
-				}, time);
+				}, 200);
 			}
 		}, {
 			key: 'componentDidMount',
@@ -36034,8 +35963,8 @@
 					_this7.submitPaper();
 				});
 
-				obserable.on('beginAnswer', function (data) {
-					_this7.beginAnswer(data);
+				obserable.on('beginAnswer', function () {
+					_this7.beginAnswer();
 				});
 				obserable.on('setQuestionScroll', function () {
 

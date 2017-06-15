@@ -32,12 +32,49 @@ export class App extends Component {
 		}
 		this.viewW = document.documentElement.clientWidth;
 		this.viewH = document.documentElement.clientHeight;
+
+		this.zmitiMap = [
+				{"name":"北京市", "log":"116.46", "lat":"39.92"},
+				{"name":"上海市", "log":"121.48", "lat":"31.22"},
+				{"name":"天津市", "log":"117.2", "lat":"39.13"},
+				{"name":"重庆市", "log":"106.54", "lat":"29.59"},
+				{"name":"石家庄", "log":"114.48", "lat":"38.03"},
+				{"name":"太原市", "log":"112.53", "lat":"37.87"},
+				{"name":"沈阳市", "log":"123.38", "lat":"41.8"},
+				{"name":"长春市", "log":"125.35", "lat":"43.88"},
+				{"name":"哈尔滨市", "log":"126.63", "lat":"45.75"},
+				{"name":"杭州市", "log":"120.19", "lat":"30.26"},
+				{"name":"福州市", "log":"119.3", "lat":"26.08"},
+				{"name":"济南市", "log":"106.54", "lat":"29.59"},
+				{"name":"郑州市", "log":"113.65", "lat":"34.76"},
+				{"name":"武汉市", "log":"114.31", "lat":"30.52"},
+				{"name":"长沙市", "log":"113", "lat":"28.21"},
+				{"name":"广州市", "log":"113.23", "lat":"23.16"},
+				{"name":"海口市", "log":"110.35", "lat":"20.02"},
+				{"name":"成都市", "log":"104.06", "lat":"30.67"},
+				{"name":"贵阳市", "log":"106.71", "lat":"26.57"},
+				{"name":"昆明市", "log":"102.73", "lat":"25.04"},
+				{"name":"南昌市", "log":"115.89", "lat":"28.68"},
+				{"name":"西安市", "log":"108.95", "lat":"34.27"},
+				{"name":"西宁市", "log":"101.74", "lat":"36.56"},
+				{"name":"兰州市", "log":"103.73", "lat":"36.03"},
+				{"name":"南宁市", "log":"106.54", "lat":"29.59"},
+				{"name":"乌鲁木齐市", "log":"87.68", "lat":"43.77"},
+				{"name":"呼和浩特市", "log":"111.65", "lat":"40.82"},
+				{"name":"拉萨市", "log":"91.11", "lat":"29.97"},
+				{"name":"银川市", "log":"106.27", "lat":"38.47"},
+				{"name":"台北市", "log":"121.5", "lat":"25.14"},
+				{"name":"香港", "log":"114.17", "lat":"22.27"},
+				{"name":"澳门", "log":"113.33", "lat":"22.13"},
+				{"name":"合肥市", "log":"117.27", "lat":"31.86"},
+				{"name":"南京市", "log":"118.78", "lat":"32.04"}
+			]
 	}
 	render() {
 		
 		var mainStyle={};
 		if(this.state.indexBg){
-			mainStyle.background = 'url('+this.state.indexBg+') no-repeat center / cover'
+			mainStyle.background = this.state.indexBg? '#fff url('+this.state.indexBg+') no-repeat center / cover' : "#fff url(./assets/images/bg.png) no-repeat center center / cover "
 		}
 
 		var data ={
@@ -49,7 +86,11 @@ export class App extends Component {
 			totalDuration:this.state.totalDuration,
 			question:this.state.question,
 			myAnswer:this.state.myAnswer,
-			arr:this.state.arr
+			arr:this.state.arr,
+			indexBg:this.state.indexBg,
+			indexPage:this.state.indexPage,
+			worksid:this.state.worksid,
+			needInfo:this.state.needInfo
 		}
 
 
@@ -60,9 +101,9 @@ export class App extends Component {
 
 		return (
 			<div className='zmiti-main-ui' style={mainStyle}>
-				{this.state.showLoading && <ZmitiLoadingApp progress={this.state.progress}></ZmitiLoadingApp>}
+				{this.state.showLoading && <ZmitiLoadingApp myHeadImg={this.state.headimgurl} progress={this.state.progress}></ZmitiLoadingApp>}
 				{!this.state.showLoading && <ZmitiIndexApp {...data}></ZmitiIndexApp>}
-				{!this.state.showLoading && <ZmitiContentApp {...data}></ZmitiContentApp>}
+				{!this.state.showLoading && <ZmitiContentApp {...this.state} {...data}></ZmitiContentApp>}
 				{!this.state.showLoading && <ZmitiResultApp {...data}></ZmitiResultApp>}
 				{ZmitiCustomApp &&<ZmitiCustomApp {...data}></ZmitiCustomApp>}
 			</div>
@@ -106,6 +147,26 @@ export class App extends Component {
 				error(){
 
 				},
+				 cancel:function(){
+						        
+
+
+			    	var idx = Math.random()*s.zmitiMap.length|0;
+
+			    	var latitude = s.zmitiMap[idx].lat; // 纬度，浮点数，范围为90 ~ -90
+			        
+			        var longitude = s.zmitiMap[idx].log; // 经度，浮点数，范围为180 ~ -180。
+			       
+			        var accuracy = 100; // 位置精度
+			    	wx.posData = {
+			        	longitude,
+			        	latitude,
+			        	accuracy
+			        };
+			        if((s.nickname || s.headimgurl) && s.openid){
+			        	s.getPos(s.nickname,s.headimgurl);
+			        }
+			    },
 				success(data){
 					if(data.status === '1' && data.infocode === '10000'){
 						
@@ -167,24 +228,7 @@ export class App extends Component {
 					   		success(data){
 					   			if(data.getret === 0){
 					   				
-					   				$.ajax({
-										url:'http://api.zmiti.com/v2/weixin/get_wxuserdetaile',
-										data:{
-											wxopenid:s.openid
-										},
-										success(data){
-											if(data.getret === 0){
-												
-												s.score = data.wxuserinfo.totalintegral;
-												s.setState({
-													score:s.score
-												});
-											}else{
-												alert('get_wxuserdetaile : getret  : '+ data.getret + ' msg : ' + data.getmsg);	
-											}
-										}
-									})
-
+					   				
 					   			}else{
 					   				alert('getret  : '+ data.getret + ' msg : ' + data.getmsg+ ' .....');
 					   			}
@@ -223,7 +267,7 @@ export class App extends Component {
 
 			$.ajax({
 				type:'get',
-				url: "http://api.zmiti.com/weixin/jssdk.php?type=signature&durl="+code_durl,
+				url: "http://api.zmiti.com/weixin/jssdk.php?type=signature&durl="+code_durl+"&worksid="+worksid,
 				dataType:'jsonp',
 				jsonp: "callback",
 			    jsonpCallback: "jsonFlickrFeed",
@@ -253,6 +297,7 @@ export class App extends Component {
 			    		wx.getLocation({
 						    type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
 						    fail(){
+						    	alert('location fail');
 						    },
 						    success: function (res) {
 						        var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
@@ -265,9 +310,8 @@ export class App extends Component {
 						        	latitude,
 						        	accuracy
 						        };
-
 						        if((s.nickname || s.headimgurl) && s.openid){
-						        	//s.getPos(s.nickname,s.headimgurl);
+						        	s.getPos(s.nickname,s.headimgurl);
 						        }
 						       
 						    }
@@ -318,26 +362,32 @@ export class App extends Component {
 		
 		var s = this;
 		$.getJSON('./assets/js/data.json',(data)=>{
-			s.loading(data.loadingImg,(scale)=>{
-				s.setState({
-					progress:(scale*100|0)+'%'
-				})
-			},()=>{
-				s.setState({
-					showLoading:false
-				});
-			});
-
 			
-
 			this.state.custom = data.custom;
 			this.state.indexBg = data.indexBg;
+			this.state.indexPage = data.indexPage;
+			this.state.needInfo = data.needInfo;
 			this.state.title = data.title;
 			this.state.theme = data.theme;
 			this.state.duration = data.duration;
 			this.state.totalDuration = data.duration;
 			this.state.question = data.question;
-			this.wxConfig(data.shareTitle,data.shareDesc,data.shareImg);
+			this.state.worksid = data.worksid;
+			this.worksid = data.worksid;
+			this.state.wxappid = data.wxappid;
+			this.state.wxappsecret = data.wxappsecret;
+			this.state.custom = data.custom;
+			this.state.level = data.level;
+			this.state.questionType = data.questionType;
+			this.state.shareDesc = data.shareDesc || '';
+			this.state.shareTitle = data.shareTitle || '';
+			this.state.shareImg = data.shareImg;
+			this.state.showLevel = data.showLevel;
+			this.state.title = data.title;
+			document.title = this.state.title;
+			this.state.wxConfig = this.wxConfig.bind(this);
+
+			
 			this.forceUpdate(()=>{
 				obserable.trigger({
 					type:'setQuestionScroll'
@@ -376,8 +426,60 @@ export class App extends Component {
 				this.state.myAnswer.length = 0;
 				this.forceUpdate();
 			});
+
+			obserable.on('modifyShareInfo',(data)=>{
+				this.setState({
+					shareTitle : data.title,
+					shareDesc:data.desc
+				});	
+			});
+
+			this.setState({
+				showLoading:true
+			});
+
 			
-			/*$.ajax({
+			if(localStorage.getItem('nickname'+s.worksid) && localStorage.getItem('headimgurl'+s.worksid)&&
+				localStorage.getItem('openid'+s.worksid)){
+			
+				s.setState({
+					headimgurl:localStorage.getItem('headimgurl'+s.worksid)
+				});
+				s.loading(data.loadingImg,(scale)=>{
+							s.setState({
+								progress:(scale*100|0)+'%'
+							})
+						},()=>{
+						
+							s.openid = localStorage.getItem('openid'+s.worksid)
+							s.nickname = localStorage.getItem('nickname'+s.worksid);
+							s.headimgurl = localStorage.getItem('headimgurl'+s.worksid);
+							
+							s.setState({
+								showLoading:false,
+								nickname:s.nickname,
+								headimgurl:s.headimgurl,
+								openid:s.openid
+							});
+
+							s.wxConfig(
+								s.state.title,
+								s.state.title,
+								data.shareImg,
+								data.appId,
+								s.worksid
+							);
+							if (wx.posData && wx.posData.longitude) {
+								s.getPos(s.nickname, s.headimgurl);
+							}
+
+						});
+				return;
+			}
+
+			
+			
+			$.ajax({
 				url:'http://api.zmiti.com/v2/weixin/getwxuserinfo/',
 				data:{
 					code:s.getQueryString('code'),
@@ -390,39 +492,45 @@ export class App extends Component {
 					 
 					if(dt.getret === 0){
 						s.setState({
-							showLoading:true
+							headimgurl:dt.userinfo.headimgurl
 						});
 						s.loading(data.loadingImg,(scale)=>{
 							s.setState({
 								progress:(scale*100|0)+'%'
 							})
 						},()=>{
-							s.setState({
-								showLoading:false
-							});
 							
-							s.defaultName = dt.userinfo.nickname || data.username || '智媒体';
+							//s.defaultName = dt.userinfo.nickname || data.username || '智媒体';
 
-							localStorage.setItem('nickname',dt.userinfo.nickname );
-							localStorage.setItem('headimgurl',dt.userinfo.headimgurl);
+							localStorage.setItem('nickname'+s.worksid,dt.userinfo.nickname );
+							localStorage.setItem('headimgurl'+s.worksid,dt.userinfo.headimgurl);
+							localStorage.setItem('openid'+s.worksid,dt.userinfo.openid);
 							s.openid = dt.userinfo.openid;
 							s.nickname = dt.userinfo.nickname;
 							s.headimgurl = dt.userinfo.headimgurl;
-						
+							
+							s.setState({
+								showLoading:false,
+								nickname:s.nickname,
+								headimgurl:s.headimgurl,
+								openid:s.openid
+							});
 
+							s.wxConfig(
+								s.state.title,
+								s.state.title,
+								data.shareImg,
+								data.appId,
+								s.worksid
+							);
 							if (wx.posData && wx.posData.longitude) {
 								s.getPos(dt.userinfo.nickname, dt.userinfo.headimgurl);
 							}
-
-						
-							s.state.myHeadImg = dt.userinfo.headimgurl
-							s.forceUpdate();
 
 						});
 						
 					}
 					else{
-
 						
 						s.setState({
 							showLoading:true
@@ -455,6 +563,9 @@ export class App extends Component {
 							})
 						}
 						else{
+
+
+							
 
 							s.loading(data.loadingImg,(scale)=>{
 								s.setState({
@@ -496,16 +607,9 @@ export class App extends Component {
 			});
 
 
-			this.defaultName = data.username;
-		
-
-			s.defaultName = localStorage.getItem('nickname') || data.username || '智媒体';
-		
-
-			s.headimgurl = localStorage.getItem('headimgurl');
-		
-			s.forceUpdate();*/
 			
+			
+		
 
 			
 		});

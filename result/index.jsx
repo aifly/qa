@@ -14,14 +14,13 @@ class ZmitiResultApp extends Component {
 	}
 
 	render() {
-
 		var component = '';
 		switch(this.props.theme){
 			case "PAPER":
 			break;
 			case "DANGJIAN":
 			var mainStyle = {
-					background:"#fff url(./assets/images/bg.png) no-repeat center center / cover "
+					background:this.props.indexBg? '#fff url('+this.props.indexBg+') no-repeat center / cover' : "#fff url(./assets/images/bg.png) no-repeat center center / cover "
 				}
 				var arr = this.props.arr;
 				

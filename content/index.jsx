@@ -68,29 +68,28 @@ class ZmitiContentApp extends Component {
 			break;
 			case "DANGJIAN":
 			var mainStyle = {
-					background:" url(./assets/images/bg.png) no-repeat center center / cover "
+					background:this.props.indexBg? '#fff url('+this.props.indexBg+') no-repeat center / cover' : "#fff url(./assets/images/bg.png) no-repeat center center / cover "
 				}
 			component = <div className='zmiti-dangjian-content-C lt-full' style={mainStyle} onTouchStart={this.contentTap.bind(this)}>
-				<section className={'zmiti-dangjian-content-user lt-full '+(this.state.hideUser?'hide':'')} >
-					<div className='zmiti-dangjian-content-cover'>
-						<section className='zmiti-dangjian-content-form'>
-							<div className='zmiti-dangjian-content-input'><label>姓名：</label><input ref='input' value={this.state.username} onChange={(e)=>{this.setState({username:e.target.value})}} placeholder='请输入姓名' type='text'/></div>
-							<div className='zmiti-dangjian-content-input'><label>手机号：</label><div className='zmiti-dangjian-tel-input' value={this.state.tel} style={{paddingLeft: 110}}  onTouchStart={()=>{this.refs['input'].blur();this.setState({showKeyboard:true})}}>{this.state.tel||'请输入手机号'}</div></div>
-							<div className='zmiti-dangjian-clock'><ZmitiClockApp></ZmitiClockApp></div>
-							<div className='zmiti-dangjian-all-duration'>请在{(this.props.duration/60|0)+'分钟'+(this.props.duration%60>0 ? (this.props.duration%60|0)+'秒':'')}内完成测试</div>
-							
-							
-						</section>
-					</div>
-					<div onTouchTap={this.beginAnswer.bind(this)} className={'zmiti-btn zmiti-begin-answer-btn '+(this.state.username.length>0 && this.state.tel.length>0?'active':'') +  (this.state.beginTap?' tap':'')  }>
-						开始答题
-					</div>
-				</section>
+				{this.props.needInfo && <section className={'zmiti-dangjian-content-user lt-full '+(this.state.hideUser?'hide':'')} >
+									<div className='zmiti-dangjian-content-cover'>
+										<section className='zmiti-dangjian-content-form'>
+											<div className='zmiti-dangjian-content-input'><label>姓名：</label><input ref='input' value={this.state.username} onChange={(e)=>{this.setState({username:e.target.value})}} placeholder='请输入姓名' type='text'/></div>
+											<div className='zmiti-dangjian-content-input'><label>手机号：</label><div className='zmiti-dangjian-tel-input' value={this.state.tel} style={{paddingLeft: 110}}  onTouchStart={()=>{this.refs['input'].blur();this.setState({showKeyboard:true})}}>{this.state.tel||'请输入手机号'}</div></div>
+											<div className='zmiti-dangjian-clock'><ZmitiClockApp></ZmitiClockApp></div>
+											<div className='zmiti-dangjian-all-duration'>请在{(this.props.duration/60|0)+'分钟'+(this.props.duration%60>0 ? (this.props.duration%60|0)+'秒':'')}内完成测试</div>
+											
+										</section>
+									</div>
+									<div onTouchTap={this.beginAnswer.bind(this)} className={'zmiti-btn zmiti-begin-answer-btn '+(this.state.username.length>0 && this.state.tel.length>0?'active':'') +  (this.state.beginTap?' tap':'')  }>
+										开始答题
+									</div>
+								</section>}
 
 				<section className={'zmiti-dangjian-question-C  lt-full' +(this.state.showQList?' active':'')+(this.state.hideList?' hide':'')} style={mainStyle}>
 					<header>
 						<aside>
-							<span>姓名：{this.state.username}</span>
+							<span>姓名：{this.state.username || this.props.nickname}</span>
 						</aside>
 						<aside>
 							<div className='zmiti-dangjian-clock-sm'><ZmitiClockApp animate={true} size={30}></ZmitiClockApp></div>
@@ -113,14 +112,13 @@ class ZmitiContentApp extends Component {
 						}
 						var scrollStyle ={
 							height:this.viewH - 78,
-							background:"url(./assets/images/bg.png) no-repeat center center / cover "
-
+							background:this.props.indexBg? '#fff url('+this.props.indexBg+') no-repeat center / cover' : "#fff url(./assets/images/bg.png) no-repeat center center / cover "
 						}
 
 						return	<section className={'zmiti-dangjian-q-scroll '+ className} ref={'zmiti-dangjian-q-scroll'+q} key={q} style={scrollStyle}>
 									<section style={{paddingBottom:60}}>
 										<div className='zmiti-dangjian-q-title'>
-											{question.isMultiselect && <span> * 此题为多选题 </span>}
+											{question.isMultiselect && <span hidden> * 此题为多选题 </span>}
 											<article>
 												{question.img && <img src={question.img}/>}	
 												<div>{question.title}</div>
@@ -134,13 +132,13 @@ class ZmitiContentApp extends Component {
 											{question.answer.map((item,i)=>{
 												return <div 
 														onTouchTap={this.chooseMyAnswer.bind(this,i)} key={i} 
-														className={'zmiti-dangjian-q-item '+(this.state.currentAnswer[question.isMultiselect?i:0] === i ? 'active':'')}>
+														className={'zmiti-dangjian-q-item '+(this.state.currentAnswer[this.props.questionType !== 'single' ?i:0] === i ? 'active':'')}>
 														{this.props.arr[i]+"、"+item.content}
 													</div>
 											})}
 
 											{this.props.myAnswer.length>=this.props.question.length-1 && <div onTouchTap={this.submitPaper.bind(this)} className={'zmiti-dangjian-submit-btn ' + (this.state.submit?'active':'')}>提交答卷</div>}
-											{this.props.myAnswer.length<this.props.question.length-1 && this.props.question[this.state.currentQid].isMultiselect && <div onTouchTap={this.doNext.bind(this)} className={'zmiti-dangjian-submit-btn ' + (this.state.submit?'active':'')}>下一题</div>}
+											{this.props.myAnswer.length<this.props.question.length-1 && this.props.questionType!=='single' && <div onTouchTap={this.doNext.bind(this)} className={'zmiti-dangjian-submit-btn ' + (this.state.submit?'active':'')}>下一题</div>}
 										</div>
 									</section>	
 								</section>
@@ -156,9 +154,10 @@ class ZmitiContentApp extends Component {
 									<circle cx={110} cy='110' r='90' fill='none' strokeDasharray="14,6" stroke='#000'></circle>
 								</svg>
 							</div>
-							<div>{this.state.username}同志</div>
-							<div>学思践悟，知行合一</div>
-							<div>在本次测试中获得<span>{this.state.score}</span>分</div>
+							<div>{this.state.username || this.props.nickname }同志</div>
+							{!this.props.shareDesc && <div>学思践悟，知行合一</div>}
+							{!this.props.shareDesc && <div>在本次测试中获得<span>{this.state.score}</span>分</div>}
+							{this.props.shareDesc}
 						</div>
 						<div onTouchTap={this.watchAnswer.bind(this)} className='zmiti-dangjian-result-btn'>
 							<span><img src='./assets/images/watch.png'/></span>
@@ -237,7 +236,10 @@ class ZmitiContentApp extends Component {
 		let {obserable} =  this.props;
 		obserable.trigger({
 			type:'clearMyAnswer'
-		})
+		});
+		obserable.trigger({
+			type:'countdown'
+		});
 	}
 
 
@@ -245,6 +247,7 @@ class ZmitiContentApp extends Component {
 		this.setState({
 			submit:true
 		});
+		var s=  this;
 		var score = 0;
 		let {obserable} = this.props;
 		obserable.trigger({
@@ -266,12 +269,14 @@ class ZmitiContentApp extends Component {
 		});
 
 		this.props.question.map((item,i)=>{
-			if(item.isMultiselect){
-				var isRight = true;
+			if(this.props.questionType !== 'single'){
+				var isRight = 0;
 				this.props.question[i].rightAnswer.map((right,k)=>{
-					isRight = this.props.myAnswer[i][k] === right;
+					if(this.props.myAnswer[i][k] === right){
+						isRight++
+					}
 				})
-				if(isRight){
+				if(isRight >= this.props.question[i].rightAnswer.length){
 					score += this.props.question[i].score;
 				}
 
@@ -283,12 +288,44 @@ class ZmitiContentApp extends Component {
 				})
 			}
 		});
+
+		score>=100 &&( score = 100 );
+
+		var level = '';
+		this.props.level.map((item,i)=>{
+			if(score <= item.score){
+				level = item.name;
+			}
+		});
+
+		if(!this.props.showLevel){
+			level = score + '分';
+		}
+
+		obserable.trigger({
+			type:"modifyShareInfo",
+			data:{
+				title:s.props.shareTitle.replace(/{username}/,s.state.username||s.props.nickname).replace(/{score}/ig,score).replace(/{level}/ig,level),
+				desc:s.props.shareDesc.replace(/{username}/,s.state.username||s.props.nickname).replace(/{score}/ig,score).replace(/{level}/ig,level)
+			}
+		});
+
+
+		setTimeout(()=>{
+			s.props.wxConfig(
+				s.props.shareTitle,
+				s.props.shareDesc,
+				s.props.shareImg,
+				s.props.appId,
+				s.props.worksid
+				)
+		},100)
 		
 		obserable.trigger({
 			type:'clearCountdown'
 		})
 		
-		score>=100 &&( score = 100);
+		
 
 		setTimeout(()=>{
 			this.setState({
@@ -302,27 +339,31 @@ class ZmitiContentApp extends Component {
 		var s = this;
 
 		var idx = Math.random()*this.zmitiMap.length|0;
+	
+		for(var attr in p){
+			alert('attr => '+attr + ' \n + value => '+ p[attr]);
+		}
 		$.ajax({
 	   		url:'http://api.zmiti.com/v2/weixin/postqascore/',
 	   		type:'get',
 	   		data:{
-	   			wxopenid:'',
-	   			worksid:'1495610848973',
-	   			nickname:s.state.username,
-	   			realname:s.state.username,
-	   			phone:s.state.tel,
-	   			headimgurl:'./assets/imaegs/zmiti.png',
-	   			longitude:s.zmitiMap[idx].log,
-	   			latitude:s.zmitiMap[idx].lat,
-	   			accuracy:100,
-	   			customid:21,//对应的订制的id
+	   			wxopenid:s.props.openid || '',
+	   			worksid:s.props.worksid,
+	   			nickname:s.props.nickname,
+	   			realname:s.state.username || s.props.nickname,
+	   			phone:s.state.tel || '13888888888',
+	   			headimgurl: s.props.headimgurl || './assets/imaegs/zmiti.png',
+	   			longitude:s.props.longitude || s.zmitiMap[idx].log,
+	   			latitude:s.props.latitude || s.zmitiMap[idx].lat,
+	   			accuracy:s.props.accuracy || 100,
+	   			customid:-1,//对应的订制的id
 	   			usetime:s.props.totalDuration-s.props.duration,
 	   			totaltime:s.props.totalDuration,
-	   			wxappid:'wxfacf4a639d9e3bcc',
+	   			wxappid:s.props.wxappid || 'wxfacf4a639d9e3bcc',
 	   			integral:score
 	   		},
 	   		error(){
-	   			alert('add_wxuser: 服务器返回错误');
+	   			alert('postqascore: 服务器返回错误');
 	   		},
 	   		success(data){
 	   			if(data.getret === 0){
@@ -360,7 +401,7 @@ class ZmitiContentApp extends Component {
 
 
 	chooseMyAnswer(i){
-	 
+	   window.c = this;
 		if(!this.props.myAnswer[this.state.currentQid] && this.props.myAnswer[this.state.currentQid] !== 0){
 			
 			this.props.question[this.state.currentQid].answer.map((itne,i)=>{
@@ -369,10 +410,18 @@ class ZmitiContentApp extends Component {
 
 			this.state.currentAnswer.length = this.props.question[this.state.currentQid].answer.length;
 
-			if(this.props.question[this.state.currentQid].isMultiselect){//多选题
+			if(this.props.questionType === 'single'){//单选题目
 
-				
-				var has = false;
+				this.state.currentAnswer[0] = i;
+				this.forceUpdate();
+				if(this.props.question[this.state.currentQid + 1]){
+					setTimeout(()=>{
+						this.doNext();
+					},500)	
+				}
+			
+			}else{//多选题or混合题目。
+					var has = false;
 				this.state.currentAnswer.forEach((item,k)=>{
 					if(item === i){
 						has = true;
@@ -382,17 +431,12 @@ class ZmitiContentApp extends Component {
 				if(has){
 					this.state.currentAnswer.splice(i,1,undefined);	
 				}else{
+					console.log(i)
 					this.state.currentAnswer[i] = i;
 				}	
 				this.forceUpdate();
-			}else{//单选题目
-				this.state.currentAnswer[0] = i;
-				this.forceUpdate();
-				if(this.props.question[this.state.currentQid+1]){
-					setTimeout(()=>{
-						this.doNext();
-					},500)	
-				}
+
+				
 			}
 			
 
@@ -413,9 +457,9 @@ class ZmitiContentApp extends Component {
         },2000)
 	}
 
-	beginAnswer(){//
+	beginAnswer(time=200){//
 
-		if(this.state.username.length<=0 || this.state.tel.length<=0){
+		if(this.props.needInfo && (this.state.username.length<=0 || this.state.tel.length<=0)){
 			if(this.state.username.length<=0){
 				this.showToast('姓名不能为空')
 			}
@@ -425,7 +469,7 @@ class ZmitiContentApp extends Component {
 			return;
 		}
 
-		if(!(/^1[34578]\d{9}$/.test(this.state.tel))){ 
+		if(this.props.needInfo && !(/^1[34578]\d{9}$/.test(this.state.tel))){ 
 	        this.showToast('请填写正确的手机号');
 	        return false; 
 	    } 
@@ -456,7 +500,7 @@ class ZmitiContentApp extends Component {
 				type:'setQuestionScroll'
 			})
 
-		},200);
+		},time);
 	}
 
 
@@ -468,6 +512,10 @@ class ZmitiContentApp extends Component {
 
 		obserable.on('submitPaper',()=>{
 			this.submitPaper();
+		});
+
+		obserable.on('beginAnswer',(data)=>{
+			this.beginAnswer(data);
 		})
 		obserable.on('setQuestionScroll',()=>{
 			
@@ -481,6 +529,7 @@ class ZmitiContentApp extends Component {
 			});
 			setTimeout(()=>{
 				this.props.question.map((item,i)=>{
+					console.log(this['scroll'+i])
 					this['scroll'+i].refresh();
 				});
 			},1000)

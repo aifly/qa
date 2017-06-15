@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {PubCom} from '../components/public/pub.jsx';
 import './assets/css/index.css';
 import $ from 'jquery';
+import '../assets/js/touch';
 
 class ZmitiIndexApp extends Component {
 	constructor(props) {
@@ -35,7 +36,7 @@ class ZmitiIndexApp extends Component {
 				break;
 				case "DANGJIAN":
 					var mainStyle = {
-						background:"#fff url(./assets/images/bg.png) no-repeat center center / cover "
+						background:this.props.indexBg? '#fff url('+this.props.indexBg+') no-repeat center / cover' : "#fff url(./assets/images/bg.png) no-repeat center center / cover "
 					}
 					conponent = <div style={mainStyle} className='zmiti-index-dangjian-theme'>
 						<section className='zmiti-dangjian-C'>
@@ -69,6 +70,14 @@ class ZmitiIndexApp extends Component {
 				break;
 			}
 
+			if(this.props.indexPage){
+
+				var indexStyle = {
+					background:'url('+this.props.indexPage+') no-repeat  center / cover'
+				}
+				conponent = <div ref='zmiti-index-page' onTouchTap={this.beginTest.bind(this)} className='lt-full' style={indexStyle}></div>
+			}
+
 
 		return (
 			<div className={'zmiti-index-main-ui '+(this.state.hideIndex?'hide':'')}>
@@ -77,32 +86,47 @@ class ZmitiIndexApp extends Component {
 		);
 	}
 
-	beginTest(){
+	beginTest(time=500){
 
 		let {obserable} = this.props;
 		this.setState({
 			btnClick:true
-		})
+		});
+
 		setTimeout(()=>{
 			this.setState({
 				beginTest:true,
 				btnClick:false,
 			});
-
 			setTimeout(()=>{
 				this.setState({
 					hideIndex:true
-				})
+				});
 				obserable.trigger({
 					type:'toggleContent',
 					data:true
-				})
-			},500)
+				});
+				if(!this.props.needInfo){//不需要收集姓名和电话信息
+					obserable.trigger({
+						type:'beginAnswer',
+						data:0
+					});
+				}
+			},time)
 		},200)
 	}
 
 
 	componentDidMount() {
+		if(this.refs['zmiti-index-page']){
+			$(this.refs['zmiti-index-page']).swipe('up',()=>{
+				this.beginTest(0);
+			}).swipe('left',()=>{
+				this.beginTest(0);
+			});	
+		}
+		
+
 
 	}
 }
