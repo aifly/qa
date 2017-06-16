@@ -92,15 +92,15 @@
 
 	var _indexIndexJsx2 = _interopRequireDefault(_indexIndexJsx);
 
-	var _contentIndexJsx = __webpack_require__(198);
+	var _contentIndexJsx = __webpack_require__(199);
 
 	var _contentIndexJsx2 = _interopRequireDefault(_contentIndexJsx);
 
-	var _resultIndexJsx = __webpack_require__(210);
+	var _resultIndexJsx = __webpack_require__(211);
 
 	var _resultIndexJsx2 = _interopRequireDefault(_resultIndexJsx);
 
-	var _componentsPublicObserable = __webpack_require__(213);
+	var _componentsPublicObserable = __webpack_require__(214);
 
 	var _componentsPublicObserable2 = _interopRequireDefault(_componentsPublicObserable);
 
@@ -160,7 +160,7 @@
 
 				var ZmitiCustomApp = null;
 				if (this.state.custom && this.state.custom.indexOf('Zmiti') > -1 && this.state.custom.indexOf('App') > -1) {
-					var ZmitiCustomApp = __webpack_require__(214)("./" + this.state.custom.replace(/Zmiti/ig, '').replace(/App/ig, '').toLowerCase() + '/index.jsx');
+					var ZmitiCustomApp = __webpack_require__(215)("./" + this.state.custom.replace(/Zmiti/ig, '').replace(/App/ig, '').toLowerCase() + '/index.jsx');
 				}
 
 				return _react2['default'].createElement(
@@ -35100,7 +35100,7 @@
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
-	__webpack_require__(221);
+	__webpack_require__(198);
 
 	var ZmitiIndexApp = (function (_Component) {
 		_inherits(ZmitiIndexApp, _Component);
@@ -35347,6 +35347,101 @@
 /* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _jquery = __webpack_require__(185);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
+	(function ($) {
+	    $.fn.swipe = function (type, fn, option) {
+	        var setting = {
+	            disX: 50,
+	            disY: 50,
+	            responseTime: 500,
+	            isPreventDefult: true,
+	            className: ""
+
+	        };
+	        if (this.size() <= 0) {
+	            return false;
+	        }
+	        this[0].listener = this[0].listener || {};
+	        this[0].listener[type] = this[0].listener[type] || [];
+	        this[0].listener[type].push(fn);
+	        var _this = this[0];
+	        var self = this;
+	        var isMobile = ("ontouchstart" in window);
+	        var CLICK = isMobile ? "touchstart" : "mousedown";
+	        var MOVE = isMobile ? "touchmove" : "mousemove";
+	        var UP = isMobile ? "touchend" : "mouseup";
+	        var config = $.extend(setting, option);
+	        this.on(CLICK, function (e) {
+	            var e = isMobile ? e.originalEvent.changedTouches[0] : e;
+	            var startX = e.pageX,
+	                startY = e.pageY,
+	                startTime = Date.now();
+	            self.on(MOVE, function (e) {
+	                var e = isMobile ? e.originalEvent.changedTouches[0] : e;
+	                var endX = e.pageX,
+	                    endY = e.pageY,
+	                    endTime = Date.now();
+	                if (type.toLowerCase() === "left" && Math.abs((endY - startY) / (endX - startX)) <= 1 && startX - endX > config.disX) {
+	                    self.off(MOVE);
+	                    for (var i = 0; i < _this.listener[type].length; i++) {
+	                        _this.listener[type][i] && _this.listener[type][i](e, _this);
+	                    }
+	                } else if (type.toLowerCase() === "right" && Math.abs((endY - startY) / (endX - startX)) <= 1 && endX - startX > config.disX) {
+	                    self.off(MOVE);
+	                    for (var i = 0; i < _this.listener[type].length; i++) {
+	                        _this.listener[type][i] && _this.listener[type][i](e, _this);
+	                    }
+	                } else {
+	                    e.preventDefault && e.preventDefault();
+	                    return false;
+	                }
+	            }).on(UP, function (e) {
+	                var e = isMobile ? e.originalEvent.changedTouches[0] : e;
+	                var endX = e.pageX,
+	                    endY = e.pageY,
+	                    endTime = Date.now();
+	                if (endTime - startTime >= config.responseTime) {
+	                    return;
+	                }
+	                switch (type.toLowerCase()) {
+	                    case "down":
+	                        if (endY - startY > config.disY && Math.abs((endY - startY) / (endX - startX)) > 1) {
+	                            for (var i = 0; i < _this.listener[type].length; i++) {
+	                                _this.listener[type][i] && _this.listener[type][i](e, _this);
+	                            }
+	                        }
+	                        break;
+	                    case "up":
+	                        if (startY - endY > config.disY && Math.abs((endY - startY) / (endX - startX)) > 1) {
+	                            for (var i = 0; i < _this.listener[type].length; i++) {
+	                                _this.listener[type][i] && _this.listener[type][i](e, _this);
+	                            }
+	                        }
+	                        break;
+	                }
+	            });
+
+	            //if (!isMobile) {
+	            //    $(_this).off("mousemove mouseup");
+	            //    return false;
+	            //}
+	        });
+
+	        return this;
+	    };
+	})(_jquery2["default"]);
+
+/***/ },
+/* 199 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
@@ -35369,21 +35464,21 @@
 
 	var _componentsPublicPubJsx = __webpack_require__(192);
 
-	__webpack_require__(199);
+	__webpack_require__(200);
 
 	var _jquery = __webpack_require__(185);
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
-	var _componentsClockIndexJsx = __webpack_require__(201);
+	var _componentsClockIndexJsx = __webpack_require__(202);
 
 	var _componentsClockIndexJsx2 = _interopRequireDefault(_componentsClockIndexJsx);
 
-	var _componentsToastIndexJsx = __webpack_require__(204);
+	var _componentsToastIndexJsx = __webpack_require__(205);
 
 	var _componentsToastIndexJsx2 = _interopRequireDefault(_componentsToastIndexJsx);
 
-	var _componentsKeyboardIndexJsx = __webpack_require__(207);
+	var _componentsKeyboardIndexJsx = __webpack_require__(208);
 
 	var _componentsKeyboardIndexJsx2 = _interopRequireDefault(_componentsKeyboardIndexJsx);
 
@@ -35854,9 +35949,8 @@
 
 				var idx = Math.random() * this.zmitiMap.length | 0;
 
-				for (var attr in p) {
-					alert('attr => ' + attr + ' \n + value => ' + p[attr]);
-				}
+				return;
+
 				_jquery2['default'].ajax({
 					url: 'http://api.zmiti.com/v2/weixin/postqascore/',
 					type: 'get',
@@ -36099,13 +36193,13 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 199 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(200);
+	var content = __webpack_require__(201);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(190)(content, {});
@@ -36125,7 +36219,7 @@
 	}
 
 /***/ },
-/* 200 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(189)();
@@ -36139,7 +36233,7 @@
 
 
 /***/ },
-/* 201 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36164,7 +36258,7 @@
 
 	var _publicPubJsx = __webpack_require__(192);
 
-	__webpack_require__(202);
+	__webpack_require__(203);
 
 	var _jquery = __webpack_require__(185);
 
@@ -36216,13 +36310,13 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 202 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(203);
+	var content = __webpack_require__(204);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(190)(content, {});
@@ -36242,7 +36336,7 @@
 	}
 
 /***/ },
-/* 203 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(189)();
@@ -36256,7 +36350,7 @@
 
 
 /***/ },
-/* 204 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36281,7 +36375,7 @@
 
 	var _publicPubJsx = __webpack_require__(192);
 
-	__webpack_require__(205);
+	__webpack_require__(206);
 
 	var _jquery = __webpack_require__(185);
 
@@ -36321,13 +36415,13 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 205 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(206);
+	var content = __webpack_require__(207);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(190)(content, {});
@@ -36347,7 +36441,7 @@
 	}
 
 /***/ },
-/* 206 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(189)();
@@ -36361,7 +36455,7 @@
 
 
 /***/ },
-/* 207 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36386,7 +36480,7 @@
 
 	var _publicPubJsx = __webpack_require__(192);
 
-	__webpack_require__(208);
+	__webpack_require__(209);
 
 	var _jquery = __webpack_require__(185);
 
@@ -36524,13 +36618,13 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 208 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(209);
+	var content = __webpack_require__(210);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(190)(content, {});
@@ -36550,7 +36644,7 @@
 	}
 
 /***/ },
-/* 209 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(189)();
@@ -36564,7 +36658,7 @@
 
 
 /***/ },
-/* 210 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36589,7 +36683,7 @@
 
 	var _componentsPublicPubJsx = __webpack_require__(192);
 
-	__webpack_require__(211);
+	__webpack_require__(212);
 
 	var _jquery = __webpack_require__(185);
 
@@ -36755,13 +36849,13 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 211 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(212);
+	var content = __webpack_require__(213);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(190)(content, {});
@@ -36781,7 +36875,7 @@
 	}
 
 /***/ },
-/* 212 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(189)();
@@ -36795,7 +36889,7 @@
 
 
 /***/ },
-/* 213 */
+/* 214 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -36844,19 +36938,19 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 214 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./components/clock/index.jsx": 201,
-		"./components/keyboard/index.jsx": 207,
-		"./components/toast/index.jsx": 204,
-		"./content/index.jsx": 198,
+		"./components/clock/index.jsx": 202,
+		"./components/keyboard/index.jsx": 208,
+		"./components/toast/index.jsx": 205,
+		"./content/index.jsx": 199,
 		"./index/index.jsx": 195,
 		"./loading/index.jsx": 191,
-		"./module/index.jsx": 215,
-		"./qh/index.jsx": 218,
-		"./result/index.jsx": 210
+		"./module/index.jsx": 216,
+		"./qh/index.jsx": 219,
+		"./result/index.jsx": 211
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -36869,11 +36963,11 @@
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 214;
+	webpackContext.id = 215;
 
 
 /***/ },
-/* 215 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36898,7 +36992,7 @@
 
 	var _componentsPublicPubJsx = __webpack_require__(192);
 
-	__webpack_require__(216);
+	__webpack_require__(217);
 
 	var _jquery = __webpack_require__(185);
 
@@ -36938,13 +37032,13 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 216 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(217);
+	var content = __webpack_require__(218);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(190)(content, {});
@@ -36964,7 +37058,7 @@
 	}
 
 /***/ },
-/* 217 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(189)();
@@ -36978,7 +37072,7 @@
 
 
 /***/ },
-/* 218 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37003,7 +37097,7 @@
 
 	var _componentsPublicPubJsx = __webpack_require__(192);
 
-	__webpack_require__(219);
+	__webpack_require__(220);
 
 	var _jquery = __webpack_require__(185);
 
@@ -37043,13 +37137,13 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 219 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(220);
+	var content = __webpack_require__(221);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(190)(content, {});
@@ -37069,7 +37163,7 @@
 	}
 
 /***/ },
-/* 220 */
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(189)();
@@ -37081,101 +37175,6 @@
 
 	// exports
 
-
-/***/ },
-/* 221 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _jquery = __webpack_require__(185);
-
-	var _jquery2 = _interopRequireDefault(_jquery);
-
-	(function ($) {
-	    $.fn.swipe = function (type, fn, option) {
-	        var setting = {
-	            disX: 50,
-	            disY: 50,
-	            responseTime: 500,
-	            isPreventDefult: true,
-	            className: ""
-
-	        };
-	        if (this.size() <= 0) {
-	            return false;
-	        }
-	        this[0].listener = this[0].listener || {};
-	        this[0].listener[type] = this[0].listener[type] || [];
-	        this[0].listener[type].push(fn);
-	        var _this = this[0];
-	        var self = this;
-	        var isMobile = ("ontouchstart" in window);
-	        var CLICK = isMobile ? "touchstart" : "mousedown";
-	        var MOVE = isMobile ? "touchmove" : "mousemove";
-	        var UP = isMobile ? "touchend" : "mouseup";
-	        var config = $.extend(setting, option);
-	        this.on(CLICK, function (e) {
-	            var e = isMobile ? e.originalEvent.changedTouches[0] : e;
-	            var startX = e.pageX,
-	                startY = e.pageY,
-	                startTime = Date.now();
-	            self.on(MOVE, function (e) {
-	                var e = isMobile ? e.originalEvent.changedTouches[0] : e;
-	                var endX = e.pageX,
-	                    endY = e.pageY,
-	                    endTime = Date.now();
-	                if (type.toLowerCase() === "left" && Math.abs((endY - startY) / (endX - startX)) <= 1 && startX - endX > config.disX) {
-	                    self.off(MOVE);
-	                    for (var i = 0; i < _this.listener[type].length; i++) {
-	                        _this.listener[type][i] && _this.listener[type][i](e, _this);
-	                    }
-	                } else if (type.toLowerCase() === "right" && Math.abs((endY - startY) / (endX - startX)) <= 1 && endX - startX > config.disX) {
-	                    self.off(MOVE);
-	                    for (var i = 0; i < _this.listener[type].length; i++) {
-	                        _this.listener[type][i] && _this.listener[type][i](e, _this);
-	                    }
-	                } else {
-	                    e.preventDefault && e.preventDefault();
-	                    return false;
-	                }
-	            }).on(UP, function (e) {
-	                var e = isMobile ? e.originalEvent.changedTouches[0] : e;
-	                var endX = e.pageX,
-	                    endY = e.pageY,
-	                    endTime = Date.now();
-	                if (endTime - startTime >= config.responseTime) {
-	                    return;
-	                }
-	                switch (type.toLowerCase()) {
-	                    case "down":
-	                        if (endY - startY > config.disY && Math.abs((endY - startY) / (endX - startX)) > 1) {
-	                            for (var i = 0; i < _this.listener[type].length; i++) {
-	                                _this.listener[type][i] && _this.listener[type][i](e, _this);
-	                            }
-	                        }
-	                        break;
-	                    case "up":
-	                        if (startY - endY > config.disY && Math.abs((endY - startY) / (endX - startX)) > 1) {
-	                            for (var i = 0; i < _this.listener[type].length; i++) {
-	                                _this.listener[type][i] && _this.listener[type][i](e, _this);
-	                            }
-	                        }
-	                        break;
-	                }
-	            });
-
-	            //if (!isMobile) {
-	            //    $(_this).off("mousemove mouseup");
-	            //    return false;
-	            //}
-	        });
-
-	        return this;
-	    };
-	})(_jquery2["default"]);
 
 /***/ }
 /******/ ]);

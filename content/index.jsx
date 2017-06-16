@@ -281,8 +281,10 @@ class ZmitiContentApp extends Component {
 				}
 
 			}else{
+
 				this.props.question[i].rightAnswer.map((right,k)=>{
-					if(right === this.props.myAnswer[i][0]){
+
+					if(right === this.props.myAnswer[i][0] && this.props.myAnswer[i][0] !== undefined){
 						score += this.props.question[i].score;
 					}
 				})
@@ -339,10 +341,10 @@ class ZmitiContentApp extends Component {
 		var s = this;
 
 		var idx = Math.random()*this.zmitiMap.length|0;
+		
+
+		return;
 	
-		for(var attr in p){
-			alert('attr => '+attr + ' \n + value => '+ p[attr]);
-		}
 		$.ajax({
 	   		url:'http://api.zmiti.com/v2/weixin/postqascore/',
 	   		type:'get',
