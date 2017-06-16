@@ -59,7 +59,7 @@ class ZmitiIndexApp extends Component {
 									
 								</div>
 								<div className='zmiti-index-title'>
-									<div>{this.props.title}</div>
+									<div>{this.props.title.substring(0,14)}</div>
 								</div>
 							</div>
 							<div onTouchTap={this.beginTest.bind(this)} className={'zmiti-btn zmiti-begin-btn ' + (this.state.btnClick?'active':'')}>

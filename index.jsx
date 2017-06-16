@@ -538,10 +538,10 @@ export class App extends Component {
 
 						if(s.isWeiXin() ){
 
-							if(localStorage.getItem('oauthurl'+s.worksid)){
+							/*if(localStorage.getItem('oauthurl'+s.worksid)){
 								window.location.href = localStorage.getItem('oauthurl'+s.worksid);
 								return;
-							}
+							}*/
 
 							$.ajax({
 								url:'http://api.zmiti.com/v2/weixin/getoauthurl/',
@@ -556,6 +556,7 @@ export class App extends Component {
 								},
 								success(dt){
 									if(dt.getret === 0){
+										
 										localStorage.setItem('oauthurl'+s.worksid,dt.url);
 										window.location.href =  dt.url;
 									}
@@ -563,9 +564,6 @@ export class App extends Component {
 							})
 						}
 						else{
-
-
-							
 
 							s.loading(data.loadingImg,(scale)=>{
 								s.setState({

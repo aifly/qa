@@ -555,10 +555,10 @@
 
 								if (s.isWeiXin()) {
 
-									if (localStorage.getItem('oauthurl' + s.worksid)) {
-										window.location.href = localStorage.getItem('oauthurl' + s.worksid);
-										return;
-									}
+									/*if(localStorage.getItem('oauthurl'+s.worksid)){
+	        	window.location.href = localStorage.getItem('oauthurl'+s.worksid);
+	        	return;
+	        }*/
 
 									_jquery2['default'].ajax({
 										url: 'http://api.zmiti.com/v2/weixin/getoauthurl/',
@@ -572,6 +572,7 @@
 										error: function error() {},
 										success: function success(dt) {
 											if (dt.getret === 0) {
+
 												localStorage.setItem('oauthurl' + s.worksid, dt.url);
 												window.location.href = dt.url;
 											}
@@ -35219,7 +35220,7 @@
 										_react2['default'].createElement(
 											'div',
 											null,
-											this.props.title
+											this.props.title.substring(0, 14)
 										)
 									)
 								),
@@ -35899,8 +35900,10 @@
 							score += _this2.props.question[i].score;
 						}
 					} else {
+
 						_this2.props.question[i].rightAnswer.map(function (right, k) {
-							if (right === _this2.props.myAnswer[i][0]) {
+
+							if (right === _this2.props.myAnswer[i][0] && _this2.props.myAnswer[i][0] !== undefined) {
 								score += _this2.props.question[i].score;
 							}
 						});
