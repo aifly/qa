@@ -239,6 +239,7 @@ export class App extends Component {
 						//
 				   		$.ajax({
 							url:'http://api.zmiti.com/v2/msg/send_msg/',
+							type:'post',
 							data:{
 								type:s.worksid,
 								content:JSON.stringify(opt),
@@ -384,6 +385,7 @@ export class App extends Component {
 			this.state.shareImg = data.shareImg;
 			this.state.showLevel = data.showLevel;
 			this.state.title = data.title;
+			this.state.isPublish = data.isPublish;
 			document.title = this.state.title;
 			this.state.wxConfig = this.wxConfig.bind(this);
 
@@ -536,7 +538,7 @@ export class App extends Component {
 							showLoading:true
 						});
 
-						if(s.isWeiXin() ){
+						if(s.isWeiXin() && s.state.isPublish){
 
 							/*if(localStorage.getItem('oauthurl'+s.worksid)){
 								window.location.href = localStorage.getItem('oauthurl'+s.worksid);
@@ -576,6 +578,7 @@ export class App extends Component {
 
 								$.ajax({
 									url:'http://api.zmiti.com/v2/works/update_pvnum/',
+									type:"POST",
 									data:{
 										worksid:s.worksid
 									},
