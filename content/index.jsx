@@ -89,9 +89,9 @@ class ZmitiContentApp extends Component {
 				<section className={'zmiti-dangjian-question-C  lt-full' +(this.state.showQList?' active':'')+(this.state.hideList?' hide':'')} style={mainStyle}>
 					<header>
 						<aside>
-							<span>姓名：{this.state.username || this.props.nickname}</span>
+							<span style={{opacity:(this.props.needInfo)?1:0}}>姓名：{this.state.username || this.props.nickname}</span>
 						</aside>
-						<aside>
+						 <aside style={{display:this.props.isShowUseTime?'none':'block'}}>
 							<div className='zmiti-dangjian-clock-sm'><ZmitiClockApp animate={true} size={30}></ZmitiClockApp></div>
 							<div>剩余时间：<span>{this.props.duration/60<10?'0'+(this.props.duration/60|0):this.props.duration/60|0}:{this.props.duration % 60<10?'0'+this.props.duration % 60:this.props.duration % 60}</span></div>
 						</aside>

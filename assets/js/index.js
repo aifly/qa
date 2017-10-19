@@ -346,9 +346,7 @@
 
 							wx.getLocation({
 								type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-								fail: function fail() {
-									alert('location fail');
-								},
+								fail: function fail() {},
 								success: function success(res) {
 									var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
 									var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
@@ -429,6 +427,8 @@
 					_this3.state.showLevel = data.showLevel;
 					_this3.state.title = data.title;
 					_this3.state.isPublish = data.isPublish;
+					_this3.state.isUseWX = data.isUseWX;
+					_this3.state.isShowUseTime = data.isShowUseTime;
 					document.title = _this3.state.title;
 					_this3.state.wxConfig = _this3.wxConfig.bind(_this3);
 
@@ -444,17 +444,21 @@
 					});
 
 					window.s = _this3;
-
+					var i = 0;
 					obserable.on('countdown', function () {
-
+						if (_this3.state.isShowUseTime) {
+							///this.state.duration = 0;
+						}
 						_this3.timer = setInterval(function () {
 							if (_this3.state.duration <= 0) {
 								clearInterval(_this3.timer);
 								obserable.trigger({ type: 'submitPaper' });
 							}
-							_this3.setState({
-								duration: _this3.state.duration - 1
-							});
+							if (_this3.state.isShowUseTime) {} else {
+								_this3.setState({
+									duration: _this3.state.duration - 1
+								});
+							}
 						}, 1000);
 					});
 
@@ -478,140 +482,143 @@
 						showLoading: true
 					});
 
-					if (localStorage.getItem('nickname' + s.worksid) && localStorage.getItem('headimgurl' + s.worksid) && localStorage.getItem('openid' + s.worksid)) {
+					if (_this3.state.isUseWX) {
+						_jquery2['default'].ajax({
+							url: 'http://api.zmiti.com/v2/weixin/getwxuserinfo/',
+							data: {
+								code: s.getQueryString('code'),
+								wxappid: data.wxappid,
+								wxappsecret: data.wxappsecret
+							},
+							error: function error(e) {},
+							success: function success(dt) {
 
+								if (dt.getret === 0) {
+									s.setState({
+										headimgurl: dt.userinfo.headimgurl
+									});
+									s.loading(data.loadingImg, function (scale) {
+										s.setState({
+											progress: (scale * 100 | 0) + '%'
+										});
+									}, function () {
+
+										//s.defaultName = dt.userinfo.nickname || data.username || '智媒体';
+
+										localStorage.setItem('nickname' + s.worksid, dt.userinfo.nickname);
+										localStorage.setItem('headimgurl' + s.worksid, dt.userinfo.headimgurl);
+										localStorage.setItem('openid' + s.worksid, dt.userinfo.openid);
+										s.openid = dt.userinfo.openid;
+										s.nickname = dt.userinfo.nickname;
+										s.headimgurl = dt.userinfo.headimgurl;
+
+										s.setState({
+											showLoading: false,
+											nickname: s.nickname,
+											headimgurl: s.headimgurl,
+											openid: s.openid
+										});
+
+										s.wxConfig(s.state.title, s.state.title, data.shareImg, data.appId, s.worksid);
+										if (wx.posData && wx.posData.longitude) {
+											s.getPos(dt.userinfo.nickname, dt.userinfo.headimgurl);
+										}
+									});
+								} else {
+
+									s.setState({
+										showLoading: true
+									});
+
+									if (s.isWeiXin() && s.state.isPublish) {
+
+										/*if(localStorage.getItem('oauthurl'+s.worksid)){
+	         	window.location.href = localStorage.getItem('oauthurl'+s.worksid);
+	         	return;
+	         }*/
+
+										_jquery2['default'].ajax({
+											url: 'http://api.zmiti.com/v2/weixin/getoauthurl/',
+											type: 'post',
+											data: {
+												redirect_uri: window.location.href.replace(/code/ig, 'zmiti'),
+												scope: 'snsapi_userinfo',
+												worksid: s.worksid,
+												state: new Date().getTime() + ''
+											},
+											error: function error() {},
+											success: function success(dt) {
+												if (dt.getret === 0) {
+
+													localStorage.setItem('oauthurl' + s.worksid, dt.url);
+													window.location.href = dt.url;
+												}
+											}
+										});
+									} else {
+
+										s.loading(data.loadingImg, function (scale) {
+											s.setState({
+												progress: (scale * 100 | 0) + '%'
+											});
+										}, function () {
+											s.setState({
+												showLoading: false
+											});
+
+											_jquery2['default'].ajax({
+												url: 'http://api.zmiti.com/v2/works/update_pvnum/',
+												type: "POST",
+												data: {
+													worksid: s.worksid
+												},
+												success: function success(data) {
+													if (data.getret === 0) {
+														console.log(data);
+													}
+												}
+											});
+
+											s.defaultName = data.username || '智媒体';
+
+											s.forceUpdate();
+										});
+									}
+								}
+							}
+						});
+					} else {
 						s.setState({
-							headimgurl: localStorage.getItem('headimgurl' + s.worksid)
+							showLoading: true
 						});
 						s.loading(data.loadingImg, function (scale) {
 							s.setState({
 								progress: (scale * 100 | 0) + '%'
 							});
 						}, function () {
-
-							s.openid = localStorage.getItem('openid' + s.worksid);
-							s.nickname = localStorage.getItem('nickname' + s.worksid);
-							s.headimgurl = localStorage.getItem('headimgurl' + s.worksid);
-
 							s.setState({
-								showLoading: false,
-								nickname: s.nickname,
-								headimgurl: s.headimgurl,
-								openid: s.openid
+								showLoading: false
 							});
 
-							s.wxConfig(s.state.title, s.state.title, data.shareImg, data.appId, s.worksid);
-							if (wx.posData && wx.posData.longitude) {
-								s.getPos(s.nickname, s.headimgurl);
-							}
-						});
-						return;
-					}
-
-					_jquery2['default'].ajax({
-						url: 'http://api.zmiti.com/v2/weixin/getwxuserinfo/',
-						data: {
-							code: s.getQueryString('code'),
-							wxappid: data.wxappid,
-							wxappsecret: data.wxappsecret
-						},
-						error: function error(e) {},
-						success: function success(dt) {
-
-							if (dt.getret === 0) {
-								s.setState({
-									headimgurl: dt.userinfo.headimgurl
-								});
-								s.loading(data.loadingImg, function (scale) {
-									s.setState({
-										progress: (scale * 100 | 0) + '%'
-									});
-								}, function () {
-
-									//s.defaultName = dt.userinfo.nickname || data.username || '智媒体';
-
-									localStorage.setItem('nickname' + s.worksid, dt.userinfo.nickname);
-									localStorage.setItem('headimgurl' + s.worksid, dt.userinfo.headimgurl);
-									localStorage.setItem('openid' + s.worksid, dt.userinfo.openid);
-									s.openid = dt.userinfo.openid;
-									s.nickname = dt.userinfo.nickname;
-									s.headimgurl = dt.userinfo.headimgurl;
-
-									s.setState({
-										showLoading: false,
-										nickname: s.nickname,
-										headimgurl: s.headimgurl,
-										openid: s.openid
-									});
-
-									s.wxConfig(s.state.title, s.state.title, data.shareImg, data.appId, s.worksid);
-									if (wx.posData && wx.posData.longitude) {
-										s.getPos(dt.userinfo.nickname, dt.userinfo.headimgurl);
+							_jquery2['default'].ajax({
+								url: 'http://api.zmiti.com/v2/works/update_pvnum/',
+								type: "POST",
+								data: {
+									worksid: s.worksid
+								},
+								success: function success(data) {
+									if (data.getret === 0) {
+										console.log(data);
 									}
-								});
-							} else {
-
-								s.setState({
-									showLoading: true
-								});
-
-								if (s.isWeiXin() && s.state.isPublish) {
-
-									/*if(localStorage.getItem('oauthurl'+s.worksid)){
-	        	window.location.href = localStorage.getItem('oauthurl'+s.worksid);
-	        	return;
-	        }*/
-
-									_jquery2['default'].ajax({
-										url: 'http://api.zmiti.com/v2/weixin/getoauthurl/',
-										type: 'post',
-										data: {
-											redirect_uri: window.location.href.replace(/code/ig, 'zmiti'),
-											scope: 'snsapi_userinfo',
-											worksid: s.worksid,
-											state: new Date().getTime() + ''
-										},
-										error: function error() {},
-										success: function success(dt) {
-											if (dt.getret === 0) {
-
-												localStorage.setItem('oauthurl' + s.worksid, dt.url);
-												window.location.href = dt.url;
-											}
-										}
-									});
-								} else {
-
-									s.loading(data.loadingImg, function (scale) {
-										s.setState({
-											progress: (scale * 100 | 0) + '%'
-										});
-									}, function () {
-										s.setState({
-											showLoading: false
-										});
-
-										_jquery2['default'].ajax({
-											url: 'http://api.zmiti.com/v2/works/update_pvnum/',
-											type: "POST",
-											data: {
-												worksid: s.worksid
-											},
-											success: function success(data) {
-												if (data.getret === 0) {
-													console.log(data);
-												}
-											}
-										});
-
-										s.defaultName = data.username || '智媒体';
-
-										s.forceUpdate();
-									});
 								}
-							}
-						}
-					});
+							});
+							s.wxConfig(s.state.title, s.state.title, data.shareImg, data.appId, s.worksid);
+
+							s.defaultName = data.username || '智媒体';
+
+							s.forceUpdate();
+						});
+					}
 				});
 
 				(0, _jquery2['default'])(document).one('touchstart', function () {
@@ -35495,14 +35502,14 @@
 										null,
 										_react2['default'].createElement(
 											'span',
-											null,
+											{ style: { opacity: this.props.needInfo ? 1 : 0 } },
 											'姓名：',
 											this.state.username || this.props.nickname
 										)
 									),
 									_react2['default'].createElement(
 										'aside',
-										null,
+										{ style: { display: this.props.isShowUseTime ? 'none' : 'block' } },
 										_react2['default'].createElement(
 											'div',
 											{ className: 'zmiti-dangjian-clock-sm' },
